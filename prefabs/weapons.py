@@ -1,0 +1,13 @@
+from models.weapon import Weapon
+
+WEAPONS = {
+    "unarmed": {"name": "Unarmed", "damage": 1},
+    "dagger": {"name": "Dagger", "damage": 3},
+    "sword": {"name": "Sword", "damage": 5},
+    "staff": {"name": "Staff", "damage": 3},
+    "axe": {"name": "Axe", "damage": 7},
+}
+
+
+def create_weapon(key):
+    return Weapon(**WEAPONS[key])
