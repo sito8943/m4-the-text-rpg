@@ -7,12 +7,14 @@ class Item:
 
     def use(self, target):
         if self.item_type == "potion":
+            print(f"{target.name} used {self.name}.")
             for stat, value in self.effect.items():
-                if hasattr(target, stat):
-                    setattr(target, stat, getattr(target, stat) + value)
-                    print(f"{target.name} used {self.name} and gained {value} {stat}.")
+                if stat == "hp":
+                    target.heal(value)
+                elif stat == "mp":
+                    target.restore_mp(value)
                 else:
-                    print(f"{target.name} does not have {stat}.")
+                    print(f"Unknown effect: {stat}.")
         else:
             print(f"{self.name} cannot be used directly.")
 

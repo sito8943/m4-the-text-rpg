@@ -60,6 +60,10 @@ class Character:
         self.hp = min(self.hp + amount, self.max_hp())
         print(f"{self.name} heals for {amount}. Current health: {self.hp}")
 
+    def restore_mp(self, amount):
+        self.mp = min(self.mp + amount, self.max_mp())
+        print(f"{self.name} restores {amount} MP. Current MP: {self.mp}")
+
     def level_up(self):
         self.level += 1
         self.hp = self.max_hp()
