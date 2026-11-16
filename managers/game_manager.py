@@ -1,3 +1,5 @@
+import json
+
 import managers.file_manager as fm
 import managers.screen_manager as sm
 from models.character_class import CharacterClass
@@ -39,7 +41,6 @@ class GameManager:
         else:
             self.screen_manager.pause("Invalid choice. Press Enter to try again.")
             self._home_screen()
-            self._exit_game()
 
     def _game_menu(self):
         if not self._data:
@@ -72,7 +73,11 @@ class GameManager:
         self.screen_manager.message("Reading game data...")
         player_data = self.file_manager.read_file()
         if player_data:
-            player_data_dict = eval(player_data) # Convert string back to dictionary
+            try:
+                player_data_dict = json.loads(player_data)
+            except json.JSONDecodeError:
+                self.screen_manager.message("Save file is invalid or outdated. Starting fresh.")
+                return
             self._data = Character.from_dict(player_data_dict)
             self.screen_manager.message(f"Game data loaded: character name is {self._data.name}")
         else:
@@ -81,7 +86,7 @@ class GameManager:
     def _save_data(self):
         if self._data:
             player_data = self._data.to_dict()
-            self.file_manager.write_file(str(player_data))
+            self.file_manager.write_file(json.dumps(player_data, indent=2))
             self.screen_manager.message("Game data saved.")
         else:
             self.screen_manager.message("No data to save.")
