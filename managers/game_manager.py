@@ -13,62 +13,35 @@ class GameManager:
         self.screen_manager = sm.ScreenManager()
         self.file_manager = fm.FileManager("game_data.txt")
 
-    def _load_data(self):
-        print("Reading game data...")
-        player_data = self.file_manager.read_file()
-        if player_data:
-            player_data_dict = eval(player_data) # Convert string back to dictionary
-            self._data = Character.from_dict(player_data_dict)
-            print("Game data loaded: character name is", self._data.name)
+    # --- Lifecycle ---
+
+    def start_game(self):
+        self.status = "started"
+        self._load_data()
+        self._home_screen()
+
+    def _exit_game(self):
+        self.screen_manager.message("Exiting the game. Goodbye!")
+        exit()
+
+    # --- Menus ---
+
+    def _home_screen(self):
+
+        options = {
+            "1": self._game_menu,
+            "2": self._exit_game
+        }
+
+        choice = self.screen_manager.print_main_menu(data=self._data)
+        if choice in options:
+            options[choice]()
         else:
-            print("No game data found. Starting fresh.")
+            self.screen_manager.pause("Invalid choice. Press Enter to try again.")
+            self._home_screen()
+            self._exit_game()
 
-    def _save_data(self):
-        if self._data:
-            player_data = self._data.to_dict()
-            self.file_manager.write_file(str(player_data))
-            print("Game data saved.")
-        else:
-            print("No data to save.")
-        input("Game saved. Press Enter to return to the game menu.")
-        self._start_game()
-
-    def _explore(self):
-        print("Exploring the world...")
-        # Implement exploration logic here
-        input("Press Enter to return to the game menu.")
-        self._start_game()
-
-    def _character(self):
-        print("Character details:")
-        if self._data:
-            print(self._data)
-        else:
-            print("No character data available.")
-        input("Press Enter to return to the game menu.")
-        self._start_game()
-
-    def _inventory(self):
-        print("Inventory is currently empty.")
-        # Implement inventory logic here
-        input("Press Enter to return to the game menu.")
-        self._start_game()
-
-    def _shop(self):
-        print("Welcome to the shop!")
-        # Implement shop logic here
-        input("Press Enter to return to the game menu.")
-        self._start_game()
-
-    def _create_character(self):
-        name = self.screen_manager.print_create_character_screen()
-        self._data = Character(name, CharacterClass(), Weapon(), Inventory())
-        self._save_data()
-        print(f"Character '{name}' created and saved.")
-
-    def _start_game(self):
-        # Start the game logic here
-        print("Game is starting...")
+    def _game_menu(self):
         if not self._data:
             self._create_character()
 
@@ -77,7 +50,7 @@ class GameManager:
             2: self._character,
             3: self._inventory,
             4: self._shop,
-            5: self._save_data,
+            5: self._save_game,
             6: self._exit_game
         }
 
@@ -87,33 +60,70 @@ class GameManager:
             if choice in options:
                 options[choice]()
             else:
-                print("Invalid choice. Please try again.")
-                self._start_game()
+                self.screen_manager.pause("Invalid choice. Press Enter to try again.")
+                self._game_menu()
         except ValueError:
-            print("Invalid input. Please enter a number.")
-            self._start_game()
+            self.screen_manager.pause("Invalid input. Please enter a number. Press Enter to try again.")
+            self._game_menu()
 
-    def _exit_game(self):
-        print("Exiting the game. Goodbye!")
-        exit()
+    # --- Save / Load ---
 
-    def _home_screen(self):
-
-        options = { 
-            "1": self._start_game,
-            "2": self._exit_game
-        }
-
-        choice = self.screen_manager.print_main_menu(data=self._data)
-        if choice in options:
-            options[choice]()
+    def _load_data(self):
+        self.screen_manager.message("Reading game data...")
+        player_data = self.file_manager.read_file()
+        if player_data:
+            player_data_dict = eval(player_data) # Convert string back to dictionary
+            self._data = Character.from_dict(player_data_dict)
+            self.screen_manager.message(f"Game data loaded: character name is {self._data.name}")
         else:
-            print("Invalid choice. Please try again.")
-            self._home_screen()
-            self._exit_game()
+            self.screen_manager.message("No game data found. Starting fresh.")
 
-    def start_game(self):
-        self.status = "started"
-        print("Game has started.")
-        self._load_data()
-        self._home_screen()
+    def _save_data(self):
+        if self._data:
+            player_data = self._data.to_dict()
+            self.file_manager.write_file(str(player_data))
+            self.screen_manager.message("Game data saved.")
+        else:
+            self.screen_manager.message("No data to save.")
+
+    def _save_game(self):
+        self._save_data()
+        self.screen_manager.pause("Press Enter to return to the game menu.")
+        self._game_menu()
+
+    # --- Character ---
+
+    def _create_character(self):
+        name = self.screen_manager.print_create_character_screen()
+        self._data = Character(name, CharacterClass(), Weapon(), Inventory())
+        self._save_data()
+        self.screen_manager.message(f"Character '{name}' created and saved.")
+        self.screen_manager.pause()
+
+    def _character(self):
+        if self._data:
+            self.screen_manager.show_screen("Character", str(self._data).split("\n"))
+        else:
+            self.screen_manager.show_screen("Character", ["No character data available."])
+        self.screen_manager.pause("Press Enter to return to the game menu.")
+        self._game_menu()
+
+    # --- Game actions ---
+
+    def _explore(self):
+        self.screen_manager.show_screen("Explore", ["Exploring the world..."])
+        # Implement exploration logic here
+        self.screen_manager.pause("Press Enter to return to the game menu.")
+        self._game_menu()
+
+    def _inventory(self):
+        self.screen_manager.show_screen("Inventory", ["Inventory is currently empty."])
+        # Implement inventory logic here
+        self.screen_manager.pause("Press Enter to return to the game menu.")
+        self._game_menu()
+
+    def _shop(self):
+        self.screen_manager.show_screen("Shop", ["Welcome to the shop!"])
+        # Implement shop logic here
+        self.screen_manager.pause("Press Enter to return to the game menu.")
+        self._game_menu()
