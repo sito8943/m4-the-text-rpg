@@ -20,3 +20,14 @@ class Inventory:
                 print(f"- {item}")
         else:
             print("Inventory is empty.")
+
+    def to_dict(self):
+        return {
+            'items': self.items
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        inventory = cls()
+        inventory.items = data.get('items', [])
+        return inventory
