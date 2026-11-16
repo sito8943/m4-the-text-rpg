@@ -4,7 +4,7 @@ from models.inventory import Inventory
 
 
 class Character:
-    def __init__(self, name, cclass, weapon, inventory, level=1, hp=None, mp=None):
+    def __init__(self, name, cclass, weapon, inventory, level=1, hp=None, mp=None, xp=0, gold=0):
         self.name = name
         self.cclass = cclass
         self.weapon = weapon
@@ -12,6 +12,11 @@ class Character:
         self.level = level
         self.hp = self.max_hp() if hp is None else hp
         self.mp = self.max_mp() if mp is None else mp
+        self.xp = xp
+        self.gold = gold
+
+    def xp_to_next_level(self):
+        return 50 * self.level
 
     def max_hp(self):
         return self.cclass.hp + int(10 * self.cclass.hp_multiplier) * (self.level - 1)
@@ -32,6 +37,8 @@ class Character:
                 f"MP: {self.mp}/{self.max_mp()}\n"
                 f"ATK: {self.attack_power()}\n"
                 f"DEF: {self.defense_power()}\n"
+                f"XP: {self.xp}/{self.xp_to_next_level()}\n"
+                f"Gold: {self.gold}\n"
                 f"{self.weapon}")
 
     def attack(self, target):
@@ -59,6 +66,24 @@ class Character:
         self.mp = self.max_mp()
         print(f"{self.name} reached level {self.level}!")
 
+    def gain_xp(self, amount):
+        self.xp += amount
+        print(f"{self.name} gains {amount} XP.")
+        while self.xp >= self.xp_to_next_level():
+            self.xp -= self.xp_to_next_level()
+            self.level_up()
+
+    def add_gold(self, amount):
+        self.gold += amount
+        print(f"{self.name} gets {amount} gold. Total: {self.gold}")
+
+    def spend_gold(self, amount):
+        if amount > self.gold:
+            print(f"Not enough gold. You have {self.gold}, need {amount}.")
+            return False
+        self.gold -= amount
+        return True
+
     def equip_weapon(self, new_weapon):
         self.weapon = new_weapon
         print(f"{self.name} has equipped {new_weapon.name}.")
@@ -69,6 +94,8 @@ class Character:
             "level": self.level,
             "hp": self.hp,
             "mp": self.mp,
+            "xp": self.xp,
+            "gold": self.gold,
             "cclass": self.cclass.to_dict(),
             "weapon": self.weapon.to_dict(),
             "inventory": self.inventory.to_dict(),
@@ -84,4 +111,6 @@ class Character:
             level=data.get("level", 1),
             hp=data.get("hp"),
             mp=data.get("mp"),
+            xp=data.get("xp", 0),
+            gold=data.get("gold", 0),
         )
