@@ -1,5 +1,7 @@
-import managers.game_manager as gc
+import managers.game_manager as gm
 
 def main():
-    manager = gc.GameManager()
+    manager = gm.GameManager()
     manager.start_game()
+
+main()
