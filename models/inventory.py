@@ -1,3 +1,5 @@
+from models.item import Item
+
 class Inventory:
     def __init__(self):
         self.items = []
@@ -23,11 +25,11 @@ class Inventory:
 
     def to_dict(self):
         return {
-            'items': self.items
+            'items': [item.to_dict() for item in self.items]
         }
 
     @classmethod
     def from_dict(cls, data):
         inventory = cls()
-        inventory.items = data.get('items', [])
+        inventory.items = [Item.from_dict(item_data) for item_data in data.get('items', [])]
         return inventory
