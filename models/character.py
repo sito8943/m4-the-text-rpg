@@ -1,11 +1,16 @@
+from models.character_class import CharacterClass
+from models.weapon import Weapon
+from models.inventory import Inventory
+
 class Character:
-    def __init__(self, name, cclass, weapon):
+    def __init__(self, name, cclass, weapon, inventory):
         self.name = name
         self.cclass = cclass
         self.weapon = weapon
+        self.inventory = inventory
 
     def __str__(self):
-        return f"Character: {self.name}, Health: {self.cclass.current_hp}, Weapon: {self.weapon}"
+        return f"Character: {self.name}, Health: {self.cclass.current_hp}, {self.cclass}, {self.weapon}"
 
     def attack(self, target):
         damage = self.cclass.current_atk + self.weapon.damage
@@ -33,3 +38,19 @@ class Character:
         print(f"{self.name} takes {damage} damage! Current health: {self.cclass.current_hp}")
         if self.cclass.current_hp <= 0:
             print(f"{self.name} has been defeated!")
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "cclass": self.cclass.to_dict(),
+            "weapon": self.weapon.to_dict(),
+            "inventory": self.inventory.to_dict()
+        }
+
+    @classmethod
+    def from_dict(cls, data) -> 'Character':
+        name = data["name"]
+        cclass = CharacterClass.from_dict(data["cclass"])
+        weapon = Weapon.from_dict(data["weapon"])
+        inventory = Inventory.from_dict(data["inventory"]) 
+        return cls(name, cclass, weapon, inventory)
