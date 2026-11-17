@@ -1,10 +1,12 @@
 import managers.screen_manager as sm
 import managers.event_manager as em
+import managers.log_manager as lm
 
 class ActionManager:
     def __init__(self):
        self._screen_manager = sm.ScreenManager()
        self._event_manager = em.EventManager()
+       self._log_manager = lm.LogManager()
 
     def _character(self, data):
         if data:
@@ -31,6 +33,8 @@ class ActionManager:
             self._inventory()
         elif action == "shop":
             self._shop()
+        elif action == "log":
+            self._log_manager.show_log()
         elif action == "character":
             self._character(data=data)  # Pass the actual character data here
         else:

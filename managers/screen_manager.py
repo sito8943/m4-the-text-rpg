@@ -32,6 +32,12 @@ class ScreenManager:
             utils.console.slow_print(line, style=f"italic {style}")
         utils.console.pause("Press Enter to continue.")
 
+    def print_info_screen(self, title, lines=(), style="cyan", prompt=None):
+        utils.console.show_screen(title, lines, style)
+        if prompt:
+            return utils.console.ask(prompt)
+        utils.console.pause("Press Enter to continue.")
+
     def print_inventory_screen(self):
         utils.console.show_screen("Inventory", ["Inventory is currently empty."])
         utils.console.pause("Press Enter to return to the game menu.")
@@ -46,7 +52,8 @@ class ScreenManager:
             "2. Character",
             "3. Inventory",
             "4. Shop",
-            "5. Save",
-            "6. Exit",
+            "5. Log",
+            "6. Save",
+            "7. Exit",
         ])
         return utils.console.ask()

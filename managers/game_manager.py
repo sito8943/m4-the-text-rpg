@@ -53,8 +53,9 @@ class GameManager:
             2: lambda: self._action_manager.do_action("character", data=self._data),
             3: lambda: self._action_manager.do_action("inventory"),
             4: lambda: self._action_manager.do_action("shop"),
-            5: self._save_game,
-            6: self._exit_game
+            5: lambda: self._action_manager.do_action("log"),
+            6: self._save_game,
+            7: self._exit_game
         }
 
         while True:
