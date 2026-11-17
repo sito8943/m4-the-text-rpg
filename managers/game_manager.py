@@ -21,11 +21,11 @@ class GameManager:
 
     def start_game(self):
         self.status = "started"
-        self._player_data_manager.load_data()
+        self._data = self._player_data_manager.load_data()
         self._home_screen()
 
     def _exit_game(self):
-        self._screen_manager.message("Exiting the game. Goodbye!")
+        self._screen_manager.message("Exiting the game. Goodbye!", wait=1, pause=False)
         exit()
 
     # --- Menus ---
@@ -37,12 +37,12 @@ class GameManager:
             "2": self._exit_game
         }
 
-        choice = self._screen_manager.print_main_menu(data=self._data)
-        if choice in options:
-            options[choice]()
-        else:
-            self._screen_manager.pause("Invalid choice. Press Enter to try again.")
-            self._home_screen()
+        while True:
+            choice = self._screen_manager.print_main_menu(data=self._data)
+            if choice in options:
+                options[choice]()
+            else:
+                self._screen_manager.message("Invalid choice.")
 
     def _game_menu(self):
         if not self._data:
@@ -57,24 +57,22 @@ class GameManager:
             6: self._exit_game
         }
 
-        choice = self._screen_manager.print_game_menu()
-        try:
-            choice = int(choice)
+        while True:
+            choice = self._screen_manager.print_game_menu()
+            try:
+                choice = int(choice)
+            except ValueError:
+                self._screen_manager.message("Invalid input. Please enter a number.")
+                continue
             if choice in options:
                 options[choice]()
             else:
-                self._screen_manager.pause("Invalid choice. Press Enter to try again.")
-                self._game_menu()
-        except ValueError:
-            self._screen_manager.pause("Invalid input. Please enter a number. Press Enter to try again.")
-            self._game_menu()
+                self._screen_manager.message("Invalid choice.")
 
     # --- Save / Load ---
    
     def _save_game(self):
         self._player_data_manager.save_data(self._data)
-        self._screen_manager.pause("Press Enter to return to the game menu.")
-        self._game_menu()
 
     # --- Character ---
 
@@ -82,6 +80,5 @@ class GameManager:
         name = self._screen_manager.print_create_character_screen()
         self._data = Character(name, CharacterClass(), Weapon(), Inventory())
         self._player_data_manager.save_data(self._data)
-        self._screen_manager.message(f"Character '{name}' created and saved.")
-        self._screen_manager.pause()
+        self._screen_manager.message(f"Character '{name}' created and saved.", wait=1, pause=False)
 
