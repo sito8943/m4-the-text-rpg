@@ -21,7 +21,7 @@ class GameManager:
 
     def start_game(self):
         self.status = "started"
-        self._load_data()
+        self._player_data_manager.load_data()
         self._home_screen()
 
     def _exit_game(self):
@@ -72,7 +72,7 @@ class GameManager:
     # --- Save / Load ---
    
     def _save_game(self):
-        self._save_data()
+        self._player_data_manager.save_data(self._data)
         self._screen_manager.pause("Press Enter to return to the game menu.")
         self._game_menu()
 
@@ -81,7 +81,7 @@ class GameManager:
     def _create_character(self):
         name = self._screen_manager.print_create_character_screen()
         self._data = Character(name, CharacterClass(), Weapon(), Inventory())
-        self._save_data()
+        self._player_data_manager.save_data(self._data)
         self._screen_manager.message(f"Character '{name}' created and saved.")
         self._screen_manager.pause()
 
