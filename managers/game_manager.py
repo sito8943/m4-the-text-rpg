@@ -49,7 +49,7 @@ class GameManager:
             self._create_character()
 
         options = {
-            1: lambda: self._action_manager.do_action("explore"),
+            1: lambda: self._action_manager.do_action("explore", data=self._data),
             2: lambda: self._action_manager.do_action("character", data=self._data),
             3: lambda: self._action_manager.do_action("inventory"),
             4: lambda: self._action_manager.do_action("shop"),
@@ -80,5 +80,9 @@ class GameManager:
         name = self._screen_manager.print_create_character_screen()
         self._data = Character(name, CharacterClass(), Weapon(), Inventory())
         self._player_data_manager.save_data(self._data)
-        self._screen_manager.message(f"Character '{name}' created and saved.", wait=1, pause=False, style="green")
+        self._screen_manager.print_event_screen("Welcome", (
+            f"Welcome, {name}...",
+            "The terminal void has been waiting for you.",
+            "Your adventure begins now.",
+        ), style="green")
 

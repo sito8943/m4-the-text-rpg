@@ -1,8 +1,10 @@
 import managers.screen_manager as sm
+import managers.event_manager as em
 
 class ActionManager:
     def __init__(self):
        self._screen_manager = sm.ScreenManager()
+       self._event_manager = em.EventManager()
 
     def _character(self, data):
         if data:
@@ -10,9 +12,9 @@ class ActionManager:
         else:
             self._screen_manager.message("No character data available.", style="red")
 
-    def _explore(self):
-        self._screen_manager.print_explore_screen()
-        # Implement exploration logic here
+    def _explore(self, data):
+        event_type = self._event_manager.generate_event()
+        self._event_manager.trigger_event(event_type, data)
 
     def _inventory(self):
         self._screen_manager.print_inventory_screen()
@@ -24,7 +26,7 @@ class ActionManager:
 
     def do_action(self, action, data=None):
         if action == "explore":
-            self._explore()
+            self._explore(data=data)
         elif action == "inventory":
             self._inventory()
         elif action == "shop":

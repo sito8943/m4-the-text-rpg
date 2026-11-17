@@ -26,9 +26,11 @@ class ScreenManager:
         utils.console.show_screen("Character", str(character).split("\n"))
         utils.console.pause("Press Enter to return to the game menu.")
 
-    def print_explore_screen(self):
-        utils.console.show_screen("Explore", ["Exploring the world..."])
-        utils.console.pause("Press Enter to return to the game menu.")
+    def print_event_screen(self, title, story=(), style="cyan"):
+        utils.console.show_screen(title, style=style)
+        for line in story:
+            utils.console.slow_print(line, style=f"italic {style}")
+        utils.console.pause("Press Enter to continue.")
 
     def print_inventory_screen(self):
         utils.console.show_screen("Inventory", ["Inventory is currently empty."])
