@@ -6,25 +6,21 @@ class ActionManager:
 
     def _character(self, data):
         if data:
-            self._screen_manager.show_screen("Character", str(data).split("\n"))
+            self._screen_manager.print_character_screen(data)
         else:
-            self._screen_manager.show_screen("Character", ["No character data available."])
-        self._screen_manager.pause("Press Enter to return to the game menu.")
+            self._screen_manager.message("No character data available.")
 
     def _explore(self):
-        self._screen_manager.show_screen("Explore", ["Exploring the world..."])
+        self._screen_manager.print_explore_screen()
         # Implement exploration logic here
-        self._screen_manager.pause("Press Enter to return to the game menu.")
 
     def _inventory(self):
-        self._screen_manager.show_screen("Inventory", ["Inventory is currently empty."])
+        self._screen_manager.print_inventory_screen()
         # Implement inventory logic here
-        self._screen_manager.pause("Press Enter to return to the game menu.")
 
     def _shop(self):
-        self._screen_manager.show_screen("Shop", ["Welcome to the shop!"])
+        self._screen_manager.print_shop_screen()
         # Implement shop logic here
-        self._screen_manager.pause("Press Enter to return to the game menu.")
 
     def do_action(self, action, data=None):
         if action == "explore":

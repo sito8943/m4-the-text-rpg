@@ -1,3 +1,4 @@
+import time
 import utils.console
 class ScreenManager:
     def __init__(self):
@@ -10,9 +11,32 @@ class ScreenManager:
         utils.console.show_screen("Welcome to the Game!", [first_option, "2. Exit"])
         return utils.console.ask()
 
+    def message(self, message, wait=0, pause=True):
+        utils.console.show_screen("Message", [message])
+        if wait:
+            time.sleep(wait)
+        if pause:
+            utils.console.pause("Press Enter to continue.")
+
     def print_create_character_screen(self):
         utils.console.show_screen("Create Your Character")
         return utils.console.ask("Enter your character's name: ")
+
+    def print_character_screen(self, character):
+        utils.console.show_screen("Character", str(character).split("\n"))
+        utils.console.pause("Press Enter to return to the game menu.")
+
+    def print_explore_screen(self):
+        utils.console.show_screen("Explore", ["Exploring the world..."])
+        utils.console.pause("Press Enter to return to the game menu.")
+
+    def print_inventory_screen(self):
+        utils.console.show_screen("Inventory", ["Inventory is currently empty."])
+        utils.console.pause("Press Enter to return to the game menu.")
+
+    def print_shop_screen(self):
+        utils.console.show_screen("Shop", ["Welcome to the shop!"])
+        utils.console.pause("Press Enter to return to the game menu.")
 
     def print_game_menu(self):
         utils.console.show_screen("Game Menu", [
