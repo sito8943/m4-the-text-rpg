@@ -3,8 +3,12 @@ class FileManager:
         self.filename = filename
 
     def read_file(self):
-        with open(self.filename, 'r') as file:
-            return file.read()
+        try:
+            with open(self.filename, 'r') as file:
+                return file.read()
+        except FileNotFoundError:
+            with open(self.filename, 'w') as file:
+                return ""
 
     def write_file(self, content):
         with open(self.filename, 'w') as file:
