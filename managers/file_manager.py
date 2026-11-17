@@ -10,6 +10,10 @@ class FileManager:
             with open(self.filename, 'w') as file:
                 return ""
 
+    def append_file(self, content):
+        with open(self.filename, 'a') as file:
+            file.write(content)
+
     def write_file(self, content):
         with open(self.filename, 'w') as file:
             file.write(content)
