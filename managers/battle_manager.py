@@ -14,40 +14,38 @@ class BattleManager:
 
     def start(self, character, enemy):
         self._log_manager.write_log(f"Battle started: {character.name} vs {enemy.name} (level {enemy.level})")
-        last_turn = []
+
+        actions = {
+            "1": lambda: ([self._attack(character, enemy)], True),
+            "2": lambda: self._use_potion(character),
+            "3": lambda: self._flee(character, enemy),
+        }
+
         while st.is_alive(character.hp) and st.is_alive(enemy.hp):
             choice = self._screen_manager.print_info_screen(
-                "Battle", self._status(character, enemy, last_turn), "red", prompt="Choose your action: ")
-            if choice == "1":
-                last_turn = [self._attack(character, enemy)]
-            elif choice == "2":
-                used, text = self._use_potion(character)
-                last_turn = [text]
-                if not used:
-                    continue
-            elif choice == "3":
-                if self._flee(character, enemy):
-                    return
-                last_turn = ["You failed to escape!"]
-            else:
-                last_turn = ["Invalid choice."]
+                "Battle", self._status(character, enemy), "red", prompt="Choose your action: ")
+            if choice not in actions:
+                self._screen_manager.message("Invalid choice.", style="red")
                 continue
-            if st.is_alive(enemy.hp):
-                last_turn.append(self._attack(enemy, character))
+            result = actions[choice]()
+            if result is None:
+                return
+            turn, enemy_turn = result
+            if enemy_turn and st.is_alive(enemy.hp):
+                turn.append(self._attack(enemy, character))
+            self._screen_manager.print_event_screen("Battle", turn, "red")
+
         if st.is_alive(character.hp):
             self._victory(character, enemy)
         else:
             self._defeat(character, enemy)
 
-    def _status(self, character, enemy, last_turn):
-        lines = [
+    def _status(self, character, enemy):
+        return [
             f"{character.name}  HP {character.hp}/{st.max_hp(character.cclass, character.level)}",
             f"{enemy.name}  HP {enemy.hp}/{st.max_hp(enemy.cclass, enemy.level)}",
             "",
-        ]
-        if last_turn:
-            lines += last_turn + [""]
-        return lines + list(BATTLE_OPTIONS)
+        ] + list(BATTLE_OPTIONS)
 
     def _attack(self, attacker, target):
         damage = attacker.attack(target)
@@ -58,21 +56,21 @@ class BattleManager:
     def _use_potion(self, character):
         potions = [item for item in character.inventory.items if item.item_type == "potion"]
         if not potions:
-            return False, "You have no potions!"
+            return ["You have no potions!"], False
         potion = potions[0]
         potion.use(character)
         character.inventory.remove_item(potion)
         text = f"{character.name} used {potion.name}."
         self._log_manager.write_log(text)
-        return True, text
+        return [text], True
 
     def _flee(self, character, enemy):
         if random.random() >= FLEE_CHANCE:
             self._log_manager.write_log(f"{character.name} failed to flee from {enemy.name}")
-            return False
+            return ["You failed to escape!"], True
         self._log_manager.write_log(f"{character.name} fled from {enemy.name}")
         self._screen_manager.print_event_screen("Battle", ("You run as fast as you can...", "You escaped!"), "yellow")
-        return True
+        return None
 
     def _victory(self, character, enemy):
         old_level = character.level
