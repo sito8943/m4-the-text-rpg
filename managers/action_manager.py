@@ -8,7 +8,7 @@ class ActionManager:
         if data:
             self._screen_manager.print_character_screen(data)
         else:
-            self._screen_manager.message("No character data available.")
+            self._screen_manager.message("No character data available.", style="red")
 
     def _explore(self):
         self._screen_manager.print_explore_screen()
@@ -32,4 +32,4 @@ class ActionManager:
         elif action == "character":
             self._character(data=data)  # Pass the actual character data here
         else:
-            self._screen_manager.message(f"Unknown action: {action}")
+            self._screen_manager.message(f"Unknown action: {action}", style="red")

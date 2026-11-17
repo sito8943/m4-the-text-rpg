@@ -18,10 +18,10 @@ class PlayerDataManager:
             try:
                 player_data_dict = json.loads(player_data)
             except json.JSONDecodeError:
-                self._screen_manager.message("Save file is invalid or outdated. Starting fresh.", wait=1, pause=False)
+                self._screen_manager.message("Save file is invalid or outdated. Starting fresh.", wait=1, pause=False, style="red")
                 return None
             data = Character.from_dict(player_data_dict)
-            self._screen_manager.message(f"Game data loaded: character name is {data.name}", wait=1, pause=False)
+            self._screen_manager.message(f"Game data loaded: character name is {data.name}", wait=1, pause=False, style="green")
             return data
         else:
             self._screen_manager.message("No game data found. Starting fresh.", wait=1, pause=False)
@@ -31,6 +31,6 @@ class PlayerDataManager:
         if data:
             player_data = data.to_dict()
             self._file_manager.write_file(json.dumps(player_data, indent=2))
-            self._screen_manager.message("Game data saved.", wait=1, pause=False)
+            self._screen_manager.message("Game data saved.", wait=1, pause=False, style="green")
         else:
-            self._screen_manager.message("No data to save.", wait=1, pause=False)
+            self._screen_manager.message("No data to save.", wait=1, pause=False, style="red")

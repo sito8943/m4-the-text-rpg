@@ -8,11 +8,11 @@ class ScreenManager:
 
     def print_main_menu(self, data=None):
         first_option = "1. Continue Game" if data else "1. Start Game"
-        utils.console.show_screen("Welcome to the Game!", [first_option, "2. Exit"])
+        utils.console.show_screen("Welcome THE TEXT RPG!", [first_option, "2. Exit"])
         return utils.console.ask()
 
-    def message(self, message, wait=0, pause=True):
-        utils.console.show_screen("Message", [message])
+    def message(self, message, wait=0, pause=True, style="cyan"):
+        utils.console.show_screen("Message", [message], style)
         if wait:
             time.sleep(wait)
         if pause:

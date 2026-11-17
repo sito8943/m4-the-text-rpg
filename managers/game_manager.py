@@ -25,7 +25,7 @@ class GameManager:
         self._home_screen()
 
     def _exit_game(self):
-        self._screen_manager.message("Exiting the game. Goodbye!", wait=1, pause=False)
+        self._screen_manager.message("Exiting the game. Goodbye!", wait=1, pause=False, style="magenta")
         exit()
 
     # --- Menus ---
@@ -42,7 +42,7 @@ class GameManager:
             if choice in options:
                 options[choice]()
             else:
-                self._screen_manager.message("Invalid choice.")
+                self._screen_manager.message("Invalid choice.", style="red")
 
     def _game_menu(self):
         if not self._data:
@@ -62,12 +62,12 @@ class GameManager:
             try:
                 choice = int(choice)
             except ValueError:
-                self._screen_manager.message("Invalid input. Please enter a number.")
+                self._screen_manager.message("Invalid input. Please enter a number.", style="red")
                 continue
             if choice in options:
                 options[choice]()
             else:
-                self._screen_manager.message("Invalid choice.")
+                self._screen_manager.message("Invalid choice.", style="red")
 
     # --- Save / Load ---
    
@@ -80,5 +80,5 @@ class GameManager:
         name = self._screen_manager.print_create_character_screen()
         self._data = Character(name, CharacterClass(), Weapon(), Inventory())
         self._player_data_manager.save_data(self._data)
-        self._screen_manager.message(f"Character '{name}' created and saved.", wait=1, pause=False)
+        self._screen_manager.message(f"Character '{name}' created and saved.", wait=1, pause=False, style="green")
 
