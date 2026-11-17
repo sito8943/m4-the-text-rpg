@@ -1,12 +1,14 @@
 import random
 
 import managers.screen_manager as sm
+import managers.battle_manager as bm
 from prefabs.events import EVENT_TYPES, EVENTS, TREASURE_GOLD
 from prefabs.enemies import ENEMIES, create_enemy
 
 class EventManager:
     def __init__(self):
         self._screen_manager = sm.ScreenManager()
+        self._battle_manager = bm.BattleManager()
 
     def generate_event(self):
         return random.choice(EVENT_TYPES)
@@ -26,7 +28,7 @@ class EventManager:
         enemy = create_enemy(random.choice(list(ENEMIES)), level=character.level)
         story = event["story"] + (f"A wild {enemy.name} appears! Prepare for battle!",)
         self._screen_manager.print_event_screen(event["title"], story, event["style"])
-        # Implement battle logic here
+        self._battle_manager.start(character, enemy)
 
     def _trigger_treasure_event(self, character):
         event = EVENTS["treasure"]
