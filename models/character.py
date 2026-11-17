@@ -1,7 +1,9 @@
+import utils.stats as st
+
 from models.character_class import CharacterClass
 from models.weapon import Weapon
 from models.inventory import Inventory
-
+from models.wallet import Wallet
 
 class Character:
     def __init__(self, name, cclass, weapon, inventory, level=1, hp=None, mp=None, xp=0, gold=0):
@@ -9,40 +11,25 @@ class Character:
         self.cclass = cclass
         self.weapon = weapon
         self.inventory = inventory
+        self.wallet = Wallet(name, gold)
         self.level = level
-        self.hp = self.max_hp() if hp is None else hp
-        self.mp = self.max_mp() if mp is None else mp
+        self.hp = st.max_hp(cclass, level) if hp is None else hp
+        self.mp = st.max_mp(cclass, level) if mp is None else mp
         self.xp = xp
-        self.gold = gold
-
-    def xp_to_next_level(self):
-        return 50 * self.level
-
-    def max_hp(self):
-        return self.cclass.hp + int(10 * self.cclass.hp_multiplier) * (self.level - 1)
-
-    def max_mp(self):
-        return self.cclass.mp + int(5 * self.cclass.mp_multiplier) * (self.level - 1)
-
-    def attack_power(self):
-        return self.cclass.atk + int(2 * self.cclass.atk_multiplier) * (self.level - 1)
-
-    def defense_power(self):
-        return self.cclass.defense + int(1 * self.cclass.defense_multiplier) * (self.level - 1)
 
     def __str__(self):
         return (f"Character: {self.name} (level {self.level})\n"
                 f"{self.cclass}\n"
-                f"HP: {self.hp}/{self.max_hp()}\n"
-                f"MP: {self.mp}/{self.max_mp()}\n"
-                f"ATK: {self.attack_power()}\n"
-                f"DEF: {self.defense_power()}\n"
-                f"XP: {self.xp}/{self.xp_to_next_level()}\n"
-                f"Gold: {self.gold}\n"
+                f"HP: {self.hp}/{st.max_hp(self.cclass, self.level)}\n"
+                f"MP: {self.mp}/{st.max_mp(self.cclass, self.level)}\n"
+                f"ATK: {st.attack_power(self.cclass, self.level)}\n"
+                f"DEF: {st.defense_power(self.cclass, self.level)}\n"
+                f"XP: {self.xp}/{st.xp_to_next_level(self.level)}\n"
+                f"Gold: {self.wallet.gold}\n"
                 f"{self.weapon}")
 
     def attack(self, target):
-        damage = self.attack_power() + self.weapon.damage
+        damage = st.attack_power(self.cclass, self.level) + self.weapon.damage
         print(f"{self.name} attacks {target.name} for {damage} damage!")
         target.take_damage(damage)
         return damage
@@ -53,40 +40,23 @@ class Character:
         if self.hp == 0:
             print(f"{self.name} has been defeated!")
 
-    def is_alive(self):
-        return self.hp > 0
-
     def heal(self, amount):
-        self.hp = min(self.hp + amount, self.max_hp())
+        self.hp = min(self.hp + amount, st.max_hp(self.cclass, self.level))
         print(f"{self.name} heals for {amount}. Current health: {self.hp}")
 
     def restore_mp(self, amount):
-        self.mp = min(self.mp + amount, self.max_mp())
+        self.mp = min(self.mp + amount, st.max_mp(self.cclass, self.level))
         print(f"{self.name} restores {amount} MP. Current MP: {self.mp}")
-
-    def level_up(self):
-        self.level += 1
-        self.hp = self.max_hp()
-        self.mp = self.max_mp()
-        print(f"{self.name} reached level {self.level}!")
 
     def gain_xp(self, amount):
         self.xp += amount
         print(f"{self.name} gains {amount} XP.")
-        while self.xp >= self.xp_to_next_level():
-            self.xp -= self.xp_to_next_level()
-            self.level_up()
-
-    def add_gold(self, amount):
-        self.gold += amount
-        print(f"{self.name} gets {amount} gold. Total: {self.gold}")
-
-    def spend_gold(self, amount):
-        if amount > self.gold:
-            print(f"Not enough gold. You have {self.gold}, need {amount}.")
-            return False
-        self.gold -= amount
-        return True
+        while self.xp >= st.xp_to_next_level(self.level):
+            self.xp -= st.xp_to_next_level(self.level)
+            self.level += 1
+            self.hp = st.max_hp(self.cclass, self.level)
+            self.mp = st.max_mp(self.cclass, self.level)
+            print(f"{self.name} reached level {self.level}!")
 
     def equip_weapon(self, new_weapon):
         self.weapon = new_weapon
@@ -99,7 +69,7 @@ class Character:
             "hp": self.hp,
             "mp": self.mp,
             "xp": self.xp,
-            "gold": self.gold,
+            "gold": self.wallet.gold,
             "cclass": self.cclass.to_dict(),
             "weapon": self.weapon.to_dict(),
             "inventory": self.inventory.to_dict(),
