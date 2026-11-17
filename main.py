@@ -4,4 +4,5 @@ def main():
     manager = gm.GameManager()
     manager.start_game()
 
-main()
+if __name__ == "__main__":
+    main()
