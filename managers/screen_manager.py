@@ -27,7 +27,7 @@ class ScreenManager:
         utils.console.pause("Press Enter to return to the game menu.")
 
     def print_event_screen(self, title, story=(), style="cyan"):
-        utils.console.show_screen(title, style=style)
+        utils.console.show_title(title, style)
         for line in story:
             utils.console.slow_print(line, style=f"italic {style}")
         utils.console.pause("Press Enter to continue.")

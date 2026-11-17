@@ -19,6 +19,11 @@ def show_screen(title, lines=(), style="cyan"):
     clear()
     show_box(title, lines, style)
 
+def show_title(title, style="cyan"):
+    """Clears the screen and displays a title line."""
+    clear()
+    console.rule(f"[bold {style}]{title}", style=style)
+
 def show_box(title, lines=(), style="cyan"):
     """Displays a panel with a title and optional lines of text."""
     console.print(Panel("\n".join(lines), title=f"[bold {style}]{title}", border_style=style, width=BOX_WIDTH))
