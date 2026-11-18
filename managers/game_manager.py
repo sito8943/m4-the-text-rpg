@@ -1,8 +1,8 @@
 
-
 import managers.player_data_manager as pdm
 import managers.screen_manager as sm
 import managers.action_manager as am
+import managers.validation_manager as vm
 from models.character_class import CharacterClass
 from models.character import Character
 from models.weapon import Weapon
@@ -13,6 +13,7 @@ class GameManager:
 
     def __init__(self):
         self.status = "initialized"
+        self._validation_manager = vm.ValidationManager()
         self._action_manager = am.ActionManager()
         self._player_data_manager = pdm.PlayerDataManager()
         self._screen_manager = sm.ScreenManager()
@@ -78,7 +79,12 @@ class GameManager:
     # --- Character ---
 
     def _create_character(self):
-        name = self._screen_manager.print_create_character_screen()
+        while True:
+            name = self._screen_manager.print_create_character_screen()
+            error = self._validation_manager.validate(name, "name")
+            if not error:
+                break
+            self._screen_manager.message(error, "Invalid Name", style="red")
         self._data = Character(name, CharacterClass(), Weapon(), Inventory())
         self._player_data_manager.save_data(self._data)
         self._screen_manager.print_event_screen("Welcome", (
