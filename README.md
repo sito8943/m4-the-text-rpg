@@ -16,3 +16,7 @@ python3 ./main.py
 ```
 python3 -m unittest discover tests -v
 ```
+
+Note: Why unittest instead of pytest? Because it comes with python :)
+Note: Why unit tests with classes? Because unittest force you to use classes :)
+Note: Why @patch? Because is for mocking and preventing the real calling of methods which affect files or other external things :)
