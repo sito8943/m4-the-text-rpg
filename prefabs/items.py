@@ -15,7 +15,6 @@ ITEMS = {
     },
 }
 
-
 def create_item(key):
     data = ITEMS[key]
     return Item(data["name"], data["description"], data["item_type"], dict(data["effect"]))
