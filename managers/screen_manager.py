@@ -18,9 +18,15 @@ class ScreenManager:
         if pause:
             utils.console.pause("Press Enter to continue.")
 
-    def print_create_character_screen(self):
-        utils.console.show_screen("Create Your Character")
-        return utils.console.ask("Enter your character's name: ")
+    def print_create_character_screen(self, onlyAsk=False):
+        if onlyAsk is False:
+            utils.console.show_title("Create Your Character", style="green")
+            utils.console.slow_print("You are about to start your adventure!", style=f"italic green")
+            utils.console.slow_print("Let's start with your character!", style=f"italic green")        
+        return utils.console.ask("Enter your character's name: ").strip()
+
+    def print_validation_error(self, error):
+        utils.console.slow_print(error, style="italic red")
 
     def print_character_screen(self, character):
         utils.console.show_screen("Character", str(character).split("\n"))

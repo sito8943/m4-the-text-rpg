@@ -4,18 +4,16 @@ class ValidationManager:
     def __init__(self):
         self.rules = validations.rules()
 
-    def validate(self, data, rules=None):
+    def validate(self, data, rules):
         """
         Validate the given data against the specified rules.
-        :param data: A dictionary containing the data to validate.
-        :param rules: A dictionary containing the validation rules. If None, use the default rules.
-        :return: A dictionary containing any validation errors. If there are no errors, return an empty dictionary.
+        :param data: The value to validate.
+        :param rules: The name of the rule set to use (e.g. "name").
+        :return: The first error message found, or None if the data is valid.
         """
-        validation_rules = self.rules[rules]
-        for _, rules in validation_rules.items():
-            value = data
-            for rule in rules:
-                error = rule(value)
+        for checks in self.rules[rules].values():
+            for check in checks:
+                error = check(data)
                 if error:
                     return error
-        return ""
+        return None

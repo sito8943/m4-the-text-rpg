@@ -79,12 +79,11 @@ class GameManager:
     # --- Character ---
 
     def _create_character(self):
-        while True:
-            name = self._screen_manager.print_create_character_screen()
-            error = self._validation_manager.validate(name, "name")
-            if not error:
-                break
-            self._screen_manager.message(error, "Invalid Name", style="red")
+        name = self._screen_manager.print_create_character_screen()
+        while error := self._validation_manager.validate(name, "name"):
+            self._screen_manager.print_validation_error(error)
+            name = self._screen_manager.print_create_character_screen(onlyAsk=True)
+
         self._data = Character(name, CharacterClass(), Weapon(), Inventory())
         self._player_data_manager.save_data(self._data)
         self._screen_manager.print_event_screen("Welcome", (
