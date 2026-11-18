@@ -11,8 +11,8 @@ class ScreenManager:
         utils.console.show_screen("Welcome THE TEXT RPG!", [first_option, "2. Exit"])
         return utils.console.ask()
 
-    def message(self, message, wait=0, pause=True, style="cyan"):
-        utils.console.show_screen("Message", [message], style)
+    def message(self, message="", title="Message", wait=0, pause=True, style="cyan"):
+        utils.console.show_screen(title, [message], style)
         if wait:
             time.sleep(wait)
         if pause:
