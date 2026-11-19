@@ -35,14 +35,21 @@ class TestCharacter(unittest.TestCase):
         self.assertEqual(self.hero.level, 3)
         self.assertEqual(self.hero.xp, 10)
 
-    def test_level_up_restores_hp_and_mp(self, _):
+    def test_level_up_adds_hp_and_mp_gain_without_refilling(self, _):
         self.hero.hp = 1
         self.hero.mp = 0
+        hp_gain = st.max_hp(self.hero.cclass, 2) - st.max_hp(self.hero.cclass, 1)  # 10 for the default class
+        mp_gain = st.max_mp(self.hero.cclass, 2) - st.max_mp(self.hero.cclass, 1)
 
         self.hero.gain_xp(50)
 
+        self.assertEqual(self.hero.hp, 1 + hp_gain)
+        self.assertEqual(self.hero.mp, 0 + mp_gain)
+
+    def test_level_up_with_full_hp_stays_full(self, _):
+        self.hero.gain_xp(50)  # starts with full HP
+
         self.assertEqual(self.hero.hp, st.max_hp(self.hero.cclass, 2))
-        self.assertEqual(self.hero.mp, st.max_mp(self.hero.cclass, 2))
 
     # --- take_damage ---
 

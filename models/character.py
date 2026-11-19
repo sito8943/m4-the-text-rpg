@@ -62,14 +62,17 @@ class Character:
         print(f"{self.name} restores {amount} MP. Current MP: {self.mp}")
 
     def gain_xp(self, amount):
-        """Adds XP and levels up (refilling HP and MP) as many times as needed."""
+        """Adds XP and levels up as many times as needed.
+        Each level adds the extra max HP and MP to the current values, but does not refill them."""
         self.xp += amount
         print(f"{self.name} gains {amount} XP.")
         while self.xp >= st.xp_to_next_level(self.level):
+            old_max_hp = st.max_hp(self.cclass, self.level)
+            old_max_mp = st.max_mp(self.cclass, self.level)
             self.xp -= st.xp_to_next_level(self.level)
             self.level += 1
-            self.hp = st.max_hp(self.cclass, self.level)
-            self.mp = st.max_mp(self.cclass, self.level)
+            self.hp += st.max_hp(self.cclass, self.level) - old_max_hp
+            self.mp += st.max_mp(self.cclass, self.level) - old_max_mp
             print(f"{self.name} reached level {self.level}!")
 
     def equip_weapon(self, new_weapon):
