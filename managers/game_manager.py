@@ -8,6 +8,9 @@ from models.character_class import CharacterClass
 from models.character import Character
 from models.weapon import Weapon
 from models.inventory import Inventory
+from prefabs.items import create_item
+
+STARTER_POTIONS = 2
 
 class GameManager:
     """Controls the game lifecycle and the main menus."""
@@ -88,17 +91,20 @@ class GameManager:
     # --- Character ---
 
     def _create_character(self):
-        """Asks for a valid name, creates the character and saves it."""
+        """Asks for a valid name, creates the character with starter potions and saves it."""
         name = self._screen_manager.print_create_character_screen()
         while error := self._validation_manager.validate(name, "name"):
             self._screen_manager.print_validation_error(error)
             name = self._screen_manager.print_create_character_screen(onlyAsk=True)
 
         self._data = Character(name, CharacterClass(), Weapon(), Inventory())
+        for _ in range(STARTER_POTIONS):
+            self._data.inventory.add_item(create_item("potion"))
         self._player_data_manager.save_data(self._data)
         self._screen_manager.print_event_screen("Welcome", (
             f"Welcome, {name}...",
             "The terminal void has been waiting for you.",
+            "You carry 2 potions. Use them wisely.",
             "Your adventure begins now.",
         ), style="green")
 
