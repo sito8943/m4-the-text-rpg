@@ -28,7 +28,8 @@ class Character:
         return (f"Character: {self.name} (level {self.level})\n"
                 f"{self.cclass}\n"
                 f"HP: {self.hp}/{st.max_hp(self.cclass, self.level)}\n"
-                f"MP: {self.mp}/{st.max_mp(self.cclass, self.level)}\n"
+                # MP is hidden for now. It will be used for spells at the end of the project.
+                # f"MP: {self.mp}/{st.max_mp(self.cclass, self.level)}\n"
                 f"ATK: {st.attack_power(self.cclass, self.level)}\n"
                 f"DEF: {st.defense_power(self.cclass, self.level)}\n"
                 f"XP: {self.xp}/{st.xp_to_next_level(self.level)}\n"
