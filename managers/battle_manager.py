@@ -7,6 +7,7 @@ import managers.screen_manager as sm
 import managers.log_manager as lm
 
 FLEE_CHANCE = 0.5
+VICTORY_HEAL = 0.3
 BATTLE_OPTIONS = ("1. Attack", "2. Use potion", "3. Flee")
 
 class BattleManager:
@@ -83,13 +84,16 @@ class BattleManager:
         return None
 
     def _victory(self, character, enemy):
-        """Gives XP and gold, records the defeated enemy and shows the victory screen."""
+        """Gives XP and gold, heals part of the HP, records the enemy and shows the victory screen."""
         old_level = character.level
         character.gain_xp(enemy.xp_reward)
         character.wallet.gold += enemy.gold_reward
         character.defeated_enemies.add(enemy.name)
+        old_hp = character.hp
+        character.heal(int(st.max_hp(character.cclass, character.level) * VICTORY_HEAL))
         story = (f"{enemy.name} has been defeated!",
-                 f"You gain {enemy.xp_reward} XP and {enemy.gold_reward} gold.")
+                 f"You gain {enemy.xp_reward} XP and {enemy.gold_reward} gold.",
+                 f"You catch your breath and recover {character.hp - old_hp} HP.")
         if character.level > old_level:
             story += (f"Level up! You are now level {character.level}!",)
         self._log_manager.write_log(f"{character.name} defeated {enemy.name} (+{enemy.xp_reward} XP, +{enemy.gold_reward} gold)")
