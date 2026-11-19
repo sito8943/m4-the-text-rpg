@@ -51,7 +51,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 - [x] Unit tests
 - [ ] Inventory screen: list and use items
 - [ ] Shop: buy items with gold
-- [ ] Choose a class (warrior, mage, rogue) when creating the character
+- [x] Choose a class (warrior, hunter, rogue) when creating the character
 - [x] Enemies from the D&D 5e API, with a local cache and prefab enemies as backup
 
 ## Graded points
@@ -100,13 +100,14 @@ List of the criteria this project covers and where to find them.
 - `ValidationManager.validate` (`managers/validation_manager.py`) checks a value against a rule set and returns the first error.
 - Rules live in `prefabs/validations.py`: the name cannot be empty, needs at least 3 letters and can only contain letters and spaces.
 - `GameManager._create_character` asks again until the name is valid.
+- `GameManager._choose_class` asks again until the player picks one of the classes in `prefabs/classes.py`.
 - Menus reject invalid choices and show an error.
 
 ### Functions documentation
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 40 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, New Game, Main Menu, `exit` command) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 42 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, New Game, Main Menu, `exit` command) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
