@@ -7,7 +7,7 @@ import managers.screen_manager as sm
 import managers.log_manager as lm
 
 FLEE_CHANCE = 0.5
-VICTORY_HEAL = 0.3
+VICTORY_HEAL = 0.1
 BATTLE_OPTIONS = ("Attack", "Use potion", "Flee")
 
 class BattleManager:
