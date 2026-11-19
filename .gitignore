@@ -1,4 +1,4 @@
 *.cpython*
-game_data.txt
+game_data.json
 battle_log.txt
 monsters_cache.json
