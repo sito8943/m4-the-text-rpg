@@ -50,7 +50,7 @@ class TestApiHelpers(unittest.TestCase):
 
     def test_challenge_ratings_grow_with_level(self):
         self.assertEqual(challenge_ratings(1), (0.125, 0.25))
-        self.assertEqual(challenge_ratings(6), (3,))
+        self.assertEqual(challenge_ratings(6), (2,))
         self.assertEqual(challenge_ratings(50), (10,))
 
     def test_dice_average(self):
@@ -63,7 +63,7 @@ class TestApiHelpers(unittest.TestCase):
         self.assertEqual(enemy.name, "Goblin")
         self.assertEqual(enemy.hp, 27)
         self.assertEqual(enemy.weapon.name, "Scimitar")
-        self.assertEqual(enemy.xp_reward, 14)
+        self.assertEqual(enemy.xp_reward, 23)
 
 
 if __name__ == "__main__":

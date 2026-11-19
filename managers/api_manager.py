@@ -20,7 +20,7 @@ def challenge_ratings(level):
         return (0.25, 0.5)
     if level == 3:
         return (0.5, 1)
-    return (min(level // 2, 10),)
+    return (min(level // 3, 10),)
 
 
 class ApiManager:

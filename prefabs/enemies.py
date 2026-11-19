@@ -36,7 +36,7 @@ def create_enemy(key, level=1):
         cclass=CharacterClass(**data["cclass"]),
         weapon=create_weapon(data["weapon"]),
         level=level,
-        xp_reward=data["xp_reward"],
+        xp_reward=data["xp_reward"] + st.xp_to_next_level(level) // 3,
         gold_reward=data["gold_reward"],
     )
 
@@ -44,11 +44,11 @@ def create_enemy(key, level=1):
 def create_api_enemy(monster, level=1):
     """Returns a new Enemy from a D&D API monster dict, scaled to this game's stats."""
     hp = min(20 + monster["hit_points"], 150)
-    xp_reward = max(5, int(monster["xp"] ** 0.5) * 2)
+    xp_reward = st.xp_to_next_level(level) // 3 + int(monster["xp"] ** 0.5)
     return Enemy(
         name=monster["name"],
         cclass=CharacterClass(name=monster["name"], hp=hp, mp=0,
-                              atk=3 + monster["attack_bonus"], defense=monster["armor_class"] // 3),
+                              atk=2 + monster["attack_bonus"] // 2, defense=monster["armor_class"] // 3),
         weapon=Weapon(monster["attack_name"], max(1, st.dice_average(monster["damage_dice"]) // 2)),
         level=level,
         xp_reward=xp_reward,
