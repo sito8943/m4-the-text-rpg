@@ -5,7 +5,7 @@ import random
 import managers.screen_manager as sm
 import managers.battle_manager as bm
 import managers.api_manager as api
-from prefabs.events import EVENT_TYPES, EVENTS, TREASURE_GOLD
+from prefabs.events import EVENT_CHANCES, EVENTS, TREASURE_GOLD
 from prefabs.enemies import ENEMIES, create_enemy, create_api_enemy
 
 class EventManager:
@@ -18,8 +18,13 @@ class EventManager:
         self._api_manager = api.ApiManager()
 
     def generate_event(self):
-        """Returns a random event type from EVENT_TYPES."""
-        return random.choice(EVENT_TYPES)
+        """Returns a random event type. Events with a bigger chance in EVENT_CHANCES come out more often."""
+        roll = random.randint(1, 100)
+        for event_type, chance in EVENT_CHANCES.items():
+            if roll <= chance:
+                return event_type
+            roll -= chance
+        return "nothing"
 
     def trigger_event(self, event_type, character):
         """Runs the event of the given type for the character."""

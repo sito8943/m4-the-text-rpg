@@ -1,6 +1,11 @@
 """Exploration event types, their stories and the treasure gold range."""
 
-EVENT_TYPES = ("battle", "treasure", "nothing")
+# Chance (in %) of each event when exploring. They must add up to 100.
+EVENT_CHANCES = {
+    "battle": 60,
+    "nothing": 25,
+    "treasure": 15,
+}
 
 EVENTS = {
     "battle": {
