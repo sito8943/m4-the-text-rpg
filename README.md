@@ -85,10 +85,10 @@ List of the criteria this project covers and where to find them.
 - If there is no internet: a cached monster is used. If there is no cache either: an enemy from `prefabs/enemies.py` is used (`EventManager._spawn_enemy`).
 
 ### Data structures
-- **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`), save data (`to_dict` / `from_dict`).
+- **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`, `EVENT_CHANCES`), save data (`to_dict` / `from_dict`).
 - **list:** inventory items (`Inventory.items`, shown and used in `ActionManager._inventory`), battle turn text, log lines.
 - **set:** enemies already defeated (`Character.defeated_enemies`), so each name is stored once.
-- **tuple:** fixed data that never changes: `EVENT_TYPES`, `BATTLE_OPTIONS`, `TREASURE_GOLD`, event stories.
+- **tuple:** fixed data that never changes: `BATTLE_OPTIONS`, `GAME_OPTIONS`, `TREASURE_GOLD`, event stories.
 
 ### Exceptions
 - `FileManager.read_file` handles `FileNotFoundError` (creates the file).
@@ -107,7 +107,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 47 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory (`ActionManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 51 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory (`ActionManager`), event chances (`EventManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
