@@ -1,3 +1,5 @@
+"""Turn-based battle between the player and an enemy."""
+
 import random
 
 import utils.stats as st
@@ -8,11 +10,15 @@ FLEE_CHANCE = 0.5
 BATTLE_OPTIONS = ("1. Attack", "2. Use potion", "3. Flee")
 
 class BattleManager:
+    """Runs a battle loop and writes every turn to the battle log."""
+
     def __init__(self):
+        """Creates the screen and log managers used during the battle."""
         self._screen_manager = sm.ScreenManager()
         self._log_manager = lm.LogManager()
 
     def start(self, character, enemy):
+        """Runs the battle loop until one side dies or the player flees."""
         self._log_manager.write_log(f"Battle started: {character.name} vs {enemy.name} (level {enemy.level})")
 
         actions = {
@@ -41,6 +47,7 @@ class BattleManager:
             self._defeat(character, enemy)
 
     def _status(self, character, enemy):
+        """Returns the lines with both HP bars and the battle options."""
         return [
             f"{character.name}  HP {character.hp}/{st.max_hp(character.cclass, character.level)}",
             f"{enemy.name}  HP {enemy.hp}/{st.max_hp(enemy.cclass, enemy.level)}",
@@ -48,12 +55,14 @@ class BattleManager:
         ] + list(BATTLE_OPTIONS)
 
     def _attack(self, attacker, target):
+        """Makes the attacker hit the target, logs it and returns the turn text."""
         damage = attacker.attack(target)
         text = f"{attacker.name} hits {target.name} for {damage} damage."
         self._log_manager.write_log(text)
         return text
 
     def _use_potion(self, character):
+        """Uses the first potion in the inventory. Returns (turn lines, enemy attacks?)."""
         potions = [item for item in character.inventory.items if item.item_type == "potion"]
         if not potions:
             return ["You have no potions!"], False
@@ -65,6 +74,7 @@ class BattleManager:
         return [text], True
 
     def _flee(self, character, enemy):
+        """Tries to escape. Returns None on success, or (turn lines, True) on failure."""
         if random.random() >= FLEE_CHANCE:
             self._log_manager.write_log(f"{character.name} failed to flee from {enemy.name}")
             return ["You failed to escape!"], True
@@ -73,6 +83,7 @@ class BattleManager:
         return None
 
     def _victory(self, character, enemy):
+        """Gives XP and gold, records the defeated enemy and shows the victory screen."""
         old_level = character.level
         character.gain_xp(enemy.xp_reward)
         character.wallet.gold += enemy.gold_reward
@@ -85,6 +96,7 @@ class BattleManager:
         self._screen_manager.print_event_screen("Victory", story, "green")
 
     def _defeat(self, character, enemy):
+        """Fully heals the character and shows the defeat screen."""
         character.hp = st.max_hp(character.cclass, character.level)
         self._log_manager.write_log(f"{character.name} was defeated by {enemy.name}")
         self._screen_manager.print_event_screen("Defeat", (

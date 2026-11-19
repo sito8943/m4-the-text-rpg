@@ -1,3 +1,5 @@
+"""Predefined enemies."""
+
 from models.character_class import CharacterClass
 from models.enemy import Enemy
 from prefabs.weapons import create_weapon
@@ -24,6 +26,7 @@ ENEMIES = {
 
 
 def create_enemy(key, level=1):
+    """Returns a new Enemy from the ENEMIES key at the given level."""
     data = ENEMIES[key]
     return Enemy(
         name=data["name"],

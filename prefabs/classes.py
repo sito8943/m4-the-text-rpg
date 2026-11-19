@@ -1,3 +1,5 @@
+"""Predefined character classes."""
+
 from models.character_class import CharacterClass
 
 CLASSES = {
@@ -17,4 +19,5 @@ CLASSES = {
 
 
 def create_class(key):
+    """Returns a new CharacterClass from the CLASSES key (warrior, mage, rogue)."""
     return CharacterClass(**CLASSES[key])

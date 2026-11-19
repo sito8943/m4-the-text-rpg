@@ -1,3 +1,5 @@
+"""Console helpers built on rich: panels, colours, input and slow print."""
+
 import os
 import time
 

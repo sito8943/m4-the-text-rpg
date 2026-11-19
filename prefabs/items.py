@@ -1,3 +1,5 @@
+"""Predefined items."""
+
 from models.item import Item
 
 ITEMS = {
@@ -16,5 +18,6 @@ ITEMS = {
 }
 
 def create_item(key):
+    """Returns a new Item from the ITEMS key (potion, ether, elixir)."""
     data = ITEMS[key]
     return Item(data["name"], data["description"], data["item_type"], dict(data["effect"]))

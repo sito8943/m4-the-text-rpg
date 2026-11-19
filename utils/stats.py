@@ -1,3 +1,5 @@
+"""Stat formulas that depend on class and level."""
+
 # --- Stats Utilities ---
 
 def xp_to_next_level(level):

@@ -1,3 +1,4 @@
+"""Main game flow: home screen, game menu, character creation and exit."""
 
 import managers.player_data_manager as pdm
 import managers.screen_manager as sm
@@ -9,9 +10,12 @@ from models.weapon import Weapon
 from models.inventory import Inventory
 
 class GameManager:
+    """Controls the game lifecycle and the main menus."""
+
     _data = None
 
     def __init__(self):
+        """Creates the managers the game needs."""
         self.status = "initialized"
         self._validation_manager = vm.ValidationManager()
         self._action_manager = am.ActionManager()
@@ -21,11 +25,13 @@ class GameManager:
     # --- Lifecycle ---
 
     def start_game(self):
+        """Loads the saved data and opens the home screen."""
         self.status = "started"
         self._data = self._player_data_manager.load_data()
         self._home_screen()
 
     def _exit_game(self):
+        """Shows a goodbye message and closes the program."""
         self._screen_manager.message("Exiting the game. Goodbye!", wait=1, pause=False, style="magenta")
         exit()
 
@@ -33,6 +39,7 @@ class GameManager:
 
     def _home_screen(self):
 
+        """Shows the home menu in a loop until the player exits."""
         options = {
             "1": self._game_menu,
             "2": self._exit_game
@@ -46,6 +53,7 @@ class GameManager:
                 self._screen_manager.message("Invalid choice.", style="red")
 
     def _game_menu(self):
+        """Shows the game menu in a loop. Creates a character first if there is none."""
         if not self._data:
             self._create_character()
 
@@ -74,11 +82,13 @@ class GameManager:
     # --- Save / Load ---
    
     def _save_game(self):
+        """Saves the current character to the save file."""
         self._player_data_manager.save_data(self._data)
 
     # --- Character ---
 
     def _create_character(self):
+        """Asks for a valid name, creates the character and saves it."""
         name = self._screen_manager.print_create_character_screen()
         while error := self._validation_manager.validate(name, "name"):
             self._screen_manager.print_validation_error(error)

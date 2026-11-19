@@ -1,3 +1,5 @@
+"""Exploration event types, their stories and the treasure gold range."""
+
 EVENT_TYPES = ("battle", "treasure", "nothing")
 
 EVENTS = {

@@ -1,7 +1,12 @@
+"""Validation of player input using the rules in prefabs.validations."""
+
 from prefabs import validations
 
 class ValidationManager:
+    """Checks values against named rule sets."""
+
     def __init__(self):
+        """Loads the validation rules."""
         self.rules = validations.rules()
 
     def validate(self, data, rules):

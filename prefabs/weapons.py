@@ -1,3 +1,5 @@
+"""Predefined weapons."""
+
 from models.weapon import Weapon
 
 WEAPONS = {
@@ -10,4 +12,5 @@ WEAPONS = {
 
 
 def create_weapon(key):
+    """Returns a new Weapon from the WEAPONS key."""
     return Weapon(**WEAPONS[key])
