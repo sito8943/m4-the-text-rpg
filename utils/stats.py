@@ -1,5 +1,7 @@
 """Stat formulas that depend on class and level."""
 
+import re
+
 # --- Stats Utilities ---
 
 def xp_to_next_level(level):
@@ -25,3 +27,11 @@ def defense_power(cclass, level):
 def is_alive(hp):
     """Returns True if the HP is above zero."""
     return hp > 0
+
+def dice_average(dice):
+    """Returns the average roll of a dice string like '2d6+3'. Returns 2 if it can't be read."""
+    match = re.match(r"(\d+)d(\d+)\s*([+-]\s*\d+)?", str(dice))
+    if not match:
+        return 2
+    count, sides, bonus = match.groups()
+    return int(count) * (int(sides) + 1) // 2 + int((bonus or "0").replace(" ", ""))
