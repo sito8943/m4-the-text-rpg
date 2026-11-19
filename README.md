@@ -40,6 +40,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 
 ## Todolist
 - [x] Interactive menu that returns after every action
+- [x] New Game and Main Menu options to start over without restarting the app
 - [x] Character creation with name validation
 - [x] Explore with random events (battle, treasure, nothing)
 - [x] Turn-based battles (attack, use potion, flee)
@@ -58,6 +59,7 @@ List of the criteria this project covers and where to find them.
 
 ### Menu
 - **Interactive menu:** `GameManager._home_screen` and `GameManager._game_menu` (`managers/game_manager.py`) show the menus in a `while True` loop. After any action the program goes back to the menu.
+- **Start over without restarting the app:** **Main Menu** (game menu) goes back to the home screen, and **New Game** (`GameManager._new_game`) asks for confirmation and replaces the current character with a new one.
 - **One menu function:** home, game and battle menus are all drawn by `ScreenManager.print_menu`, so they look and behave the same.
 - **Exit only with a specific command:** the program closes only with the **Exit** option (`GameManager._exit_game`).
 - **Well-thought-out design:** `utils/console.py` uses `rich` for coloured panels and titles; `slow_print` writes story text letter by letter; `ScreenManager.message` can add delays (`wait`).
@@ -104,7 +106,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 33 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, character creation in `GameManager` and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 37 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, New Game, Main Menu) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
