@@ -11,7 +11,9 @@ from models.inventory import Inventory
 from prefabs.items import create_item
 
 STARTER_POTIONS = 2
-GAME_OPTIONS = ("Explore", "Character", "Inventory", "Shop", "Log", "Save", "Exit")
+HOME_OPTIONS = ("New Game", "Exit")
+GAME_OPTIONS = ("Explore", "Character", "Inventory", "Shop", "Log", "Save", "Main Menu", "Exit")
+NEW_GAME_OPTIONS = ("Yes, start over", "No, go back")
 
 class GameManager:
     """Controls the game lifecycle and the main menus."""
@@ -45,11 +47,12 @@ class GameManager:
         """Shows the home menu in a loop until the player exits."""
         options = {
             "1": self._game_menu,
-            "2": self._exit_game
+            "2": self._new_game,
+            "3": self._exit_game
         }
 
         while True:
-            labels = ("Continue Game" if self._data else "Start Game", "Exit")
+            labels = ("Continue Game" if self._data else "Start Game",) + HOME_OPTIONS
             choice = self._screen_manager.print_menu("Welcome THE TEXT RPG!", labels)
             if choice in options:
                 options[choice]()
@@ -57,7 +60,8 @@ class GameManager:
                 self._screen_manager.message("Invalid choice.", style="red")
 
     def _game_menu(self):
-        """Shows the game menu in a loop. Creates a character first if there is none."""
+        """Shows the game menu in a loop until the player goes back to the main menu.
+        Creates a character first if there is none."""
         if not self._data:
             self._create_character()
 
@@ -68,15 +72,30 @@ class GameManager:
             "4": lambda: self._action_manager.do_action("shop"),
             "5": lambda: self._action_manager.do_action("log"),
             "6": self._save_game,
-            "7": self._exit_game
+            "7": None,  # Main Menu: leave this loop and go back to the home screen
+            "8": self._exit_game
         }
 
         while True:
             choice = self._screen_manager.print_menu("Game Menu", GAME_OPTIONS)
-            if choice in options:
-                options[choice]()
-            else:
+            if choice not in options:
                 self._screen_manager.message("Invalid choice.", style="red")
+            elif options[choice] is None:
+                return
+            else:
+                options[choice]()
+
+    def _new_game(self):
+        """Asks for confirmation, then replaces the current character with a new one."""
+        if self._data:
+            choice = self._screen_manager.print_menu("New Game", NEW_GAME_OPTIONS, (
+                f"{self._data.name} (level {self._data.level}) will be lost.",
+                "Are you sure?",
+            ), style="red")
+            if choice != "1":
+                return
+        self._data = None
+        self._game_menu()
 
     # --- Save / Load ---
    

@@ -2,6 +2,10 @@ import unittest
 from unittest.mock import patch
 
 from managers.game_manager import GameManager
+from models.character import Character
+from models.character_class import CharacterClass
+from models.inventory import Inventory
+from models.weapon import Weapon
 
 
 @patch("utils.console.show_title")
@@ -44,6 +48,49 @@ class TestCreateCharacter(unittest.TestCase):
 
         self.assertEqual(mock_ask.call_count, 2)
         self.assertEqual(self.gm._data.name, "Sito")
+
+
+class TestNewGame(unittest.TestCase):
+
+    def setUp(self):
+        self.gm = GameManager()
+        self.gm._data = Character("Old", CharacterClass(), Weapon(), Inventory())
+        # don't open the real game menu
+        self.game_menu = patch.object(self.gm, "_game_menu").start()
+        self.menu = patch.object(self.gm._screen_manager, "print_menu").start()
+        self.addCleanup(patch.stopall)
+
+    def test_confirm_removes_character_and_starts(self):
+        self.menu.return_value = "1"
+        self.gm._new_game()
+
+        self.assertIsNone(self.gm._data)
+        self.game_menu.assert_called_once()
+
+    def test_cancel_keeps_character(self):
+        self.menu.return_value = "2"
+        self.gm._new_game()
+
+        self.assertEqual(self.gm._data.name, "Old")
+        self.game_menu.assert_not_called()
+
+    def test_without_character_starts_without_asking(self):
+        self.gm._data = None
+        self.gm._new_game()
+
+        self.menu.assert_not_called()
+        self.game_menu.assert_called_once()
+
+
+class TestGameMenu(unittest.TestCase):
+
+    def test_main_menu_option_returns_to_home(self):
+        gm = GameManager()
+        gm._data = Character("Sito", CharacterClass(), Weapon(), Inventory())
+        with patch.object(gm._screen_manager, "print_menu", return_value="7") as menu:
+            gm._game_menu()  # would loop forever if "7" did not return
+
+        menu.assert_called_once()
 
 
 if __name__ == "__main__":
