@@ -49,7 +49,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 - [x] Battle log file (`battle_log.txt`) with a screen to read it
 - [x] Coloured screens and slow-printed text with `rich`
 - [x] Unit tests
-- [ ] Inventory screen: list and use items
+- [x] Inventory screen: list and use potions
 - [ ] Shop: buy items with gold
 - [x] Choose a class (warrior, hunter, rogue) when creating the character
 - [x] Enemies from the D&D 5e API, with a local cache and prefab enemies as backup
@@ -86,7 +86,7 @@ List of the criteria this project covers and where to find them.
 
 ### Data structures
 - **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`), save data (`to_dict` / `from_dict`).
-- **list:** inventory items (`Inventory.items`), battle turn text, log lines.
+- **list:** inventory items (`Inventory.items`, shown and used in `ActionManager._inventory`), battle turn text, log lines.
 - **set:** enemies already defeated (`Character.defeated_enemies`), so each name is stored once.
 - **tuple:** fixed data that never changes: `EVENT_TYPES`, `BATTLE_OPTIONS`, `TREASURE_GOLD`, event stories.
 
@@ -107,7 +107,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 42 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, New Game, Main Menu, `exit` command) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 46 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, New Game, Main Menu, `exit` command), the inventory (`ActionManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
