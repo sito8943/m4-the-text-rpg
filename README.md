@@ -61,7 +61,7 @@ List of the criteria this project covers and where to find them.
 - **Interactive menu:** `GameManager._home_screen` and `GameManager._game_menu` (`managers/game_manager.py`) show the menus in a `while True` loop. After any action the program goes back to the menu.
 - **Start over without restarting the app:** **Main Menu** (game menu) goes back to the home screen, and **New Game** (`GameManager._new_game`) asks for confirmation and replaces the current character with a new one.
 - **One menu function:** home, game and battle menus are all drawn by `ScreenManager.print_menu`, so they look and behave the same.
-- **Exit only with a specific command:** the program closes only with the **Exit** option (`GameManager._exit_game`).
+- **Exit only with a specific command:** the program closes only when the player types `exit` (any case) or picks the **Exit** option in the home or game menu (`EXIT_COMMAND` and `GameManager._exit_game`).
 - **Well-thought-out design:** `utils/console.py` uses `rich` for coloured panels and titles; `slow_print` writes story text letter by letter; `ScreenManager.message` can add delays (`wait`).
 
 ### Decomposition
@@ -106,7 +106,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 37 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, New Game, Main Menu) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 40 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, New Game, Main Menu, `exit` command) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
