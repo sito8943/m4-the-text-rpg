@@ -7,14 +7,16 @@ import managers.screen_manager as sm
 
 from models.character import Character
 
+DATA_FILE = "game_data.json"
+
 class PlayerDataManager:
-    """Saves and loads the character in game_data.txt."""
+    """Saves and loads the character in game_data.json."""
 
     def __init__(self):
-        """Creates the screen manager and the file manager for game_data.txt."""
+        """Creates the screen manager and the file manager for game_data.json."""
         self.player_data = {}
         self._screen_manager = sm.ScreenManager()
-        self._file_manager = fm.FileManager("game_data.txt")
+        self._file_manager = fm.FileManager(DATA_FILE)
 
     def load_data(self):
         """Returns the saved Character, or None if there is no valid save."""
