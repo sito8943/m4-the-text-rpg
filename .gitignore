@@ -1,3 +1,4 @@
 *.cpython*
 game_data.txt
 battle_log.txt
+monsters_cache.json
