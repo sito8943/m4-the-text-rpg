@@ -32,7 +32,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 | Folder | Content |
 |---|---|
 | `main.py` | Entry point. Only creates the `GameManager` and starts the game. |
-| `managers/` | Game logic: menus, actions, events, battles, files, log, save/load, screens and validation. |
+| `managers/` | Game logic: menus, actions, events, battles, API, files, log, save/load, screens and validation. |
 | `models/` | Game objects: `Character`, `Enemy`, `CharacterClass`, `Weapon`, `Item`, `Inventory`, `Wallet`. |
 | `prefabs/` | Game data: classes, enemies, weapons, items, events and validation rules. |
 | `utils/` | Helpers: console drawing (`console.py`) and stat formulas (`stats.py`). |
@@ -51,7 +51,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 - [ ] Inventory screen: list and use items
 - [ ] Shop: buy items with gold
 - [ ] Choose a class (warrior, mage, rogue) when creating the character
-- [ ] Use an external API
+- [x] Enemies from the D&D 5e API, with a local cache and prefab enemies as backup
 
 ## Graded points
 List of the criteria this project covers and where to find them.
@@ -71,7 +71,15 @@ List of the criteria this project covers and where to find them.
 - **Log file:** every battle turn is written to `battle_log.txt` instead of being kept only on screen.
   - Send new data to the file: `LogManager.write_log`.
   - Display the contents of the file: `LogManager.show_log` (menu option **5. Log**).
+- **API cache:** monsters downloaded from the API are saved in `monsters_cache.json`, so they are not downloaded again and still work offline.
 - **File access:** `FileManager` (`managers/file_manager.py`) reads, appends and writes files.
+
+### API
+- Enemies come from the [D&D 5e API](https://www.dnd5eapi.co) (334 monsters, free, no key).
+- `ApiManager.fetch_monster` (`managers/api_manager.py`) picks a random monster whose challenge rating fits the character level (`challenge_ratings`).
+- `create_api_enemy` (`prefabs/enemies.py`) converts the monster's HP, armor, attack and XP to this game's stats.
+- Uses `urllib` from the standard library, so no extra package is needed.
+- If there is no internet: a cached monster is used. If there is no cache either: an enemy from `prefabs/enemies.py` is used (`EventManager._spawn_enemy`).
 
 ### Data structures
 - **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`), save data (`to_dict` / `from_dict`).
@@ -83,6 +91,8 @@ List of the criteria this project covers and where to find them.
 - `FileManager.read_file` handles `FileNotFoundError` (creates the file).
 - `PlayerDataManager.load_data` handles `json.JSONDecodeError` (broken save file).
 - `GameManager._game_menu` handles `ValueError` (text instead of a number).
+- `ApiManager.fetch_monster` handles `URLError` (no internet), `TimeoutError` (slow API), `json.JSONDecodeError` (bad answer) and `KeyError` (missing fields), and falls back to the cache.
+- `ApiManager._load_cache` handles `json.JSONDecodeError` (broken cache file).
 
 ### Data validation
 - `ValidationManager.validate` (`managers/validation_manager.py`) checks a value against a rule set and returns the first error.
@@ -94,7 +104,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 25 tests in `tests/` for `Character`, `Wallet`, `ValidationManager` and character creation in `GameManager`.
+- 33 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, character creation in `GameManager` and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
