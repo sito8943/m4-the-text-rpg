@@ -5,10 +5,10 @@ import managers.screen_manager as sm
 import managers.action_manager as am
 import managers.validation_manager as vm
 from models.character import Character
-from models.weapon import Weapon
 from models.inventory import Inventory
 from prefabs.items import create_item
-from prefabs.classes import CLASSES, create_class
+from prefabs.classes import CLASSES, STARTER_WEAPONS, create_class
+from prefabs.weapons import WEAPONS, create_weapon
 
 STARTER_POTIONS = 2
 EXIT_COMMAND = "exit"
@@ -113,37 +113,40 @@ class GameManager:
     # --- Character ---
 
     def _create_character(self):
-        """Asks for a valid name and a class, creates the character with starter potions and saves it."""
+        """Asks for a valid name and a class, creates the character with its starter weapon and potions, and saves it."""
         name = self._screen_manager.print_create_character_screen()
         while error := self._validation_manager.validate(name, "name"):
             self._screen_manager.print_validation_error(error)
             name = self._screen_manager.print_create_character_screen(onlyAsk=True)
 
-        cclass = self._choose_class()
-        self._data = Character(name, cclass, Weapon(), Inventory())
+        class_key = self._choose_class()
+        cclass = create_class(class_key)
+        weapon = create_weapon(STARTER_WEAPONS[class_key])
+        self._data = Character(name, cclass, weapon, Inventory())
         for _ in range(STARTER_POTIONS):
             self._data.inventory.add_item(create_item("potion"))
         self._player_data_manager.save_data(self._data)
         self._screen_manager.print_event_screen("Welcome", (
             f"Welcome, {name} the {cclass.name}...",
             "The terminal void has been waiting for you.",
-            "You carry 2 potions. Use them wisely.",
+            f"You carry a {weapon.name} and {STARTER_POTIONS} potions. Use them wisely.",
             "Your adventure begins now.",
         ), style="green")
 
     def _choose_class(self):
-        """Shows the class menu until the player picks a valid class. Returns the CharacterClass."""
+        """Shows the class menu until the player picks a valid class. Returns the class key (e.g. "warrior")."""
         options = {}
         labels = []
         for number, (key, data) in enumerate(CLASSES.items(), start=1):
             options[str(number)] = key
             # MP is hidden for now. It will be used for spells at the end of the project.
             # labels.append(f"{data['name']:<8} HP {data['hp']:<4} MP {data['mp']:<4} ATK {data['atk']:<3} DEF {data['defense']}")
-            labels.append(f"{data['name']:<8} HP {data['hp']:<4} ATK {data['atk']:<3} DEF {data['defense']}")
+            weapon = WEAPONS[STARTER_WEAPONS[key]]
+            labels.append(f"{data['name']:<8} HP {data['hp']:<4} ATK {data['atk']:<3} DEF {data['defense']:<2} {weapon['name']}")
 
         while True:
             choice = self._screen_manager.print_menu("Choose Your Class", labels, style="green", story=CLASS_STORY)
             if choice in options:
-                return create_class(options[choice])
+                return options[choice]
             self._screen_manager.message("Invalid choice.", style="red")
 

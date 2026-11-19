@@ -17,8 +17,8 @@ class TestCreateCharacter(unittest.TestCase):
         # avoid writing game_data.txt and showing the welcome screen
         self.save = patch.object(self.gm._player_data_manager, "save_data").start()
         patch.object(self.gm._screen_manager, "print_event_screen").start()
-        # these tests only check the name, so the class is always the default one
-        patch.object(self.gm, "_choose_class", return_value=CharacterClass()).start()
+        # these tests only check the name, so the class is always the warrior
+        patch.object(self.gm, "_choose_class", return_value="warrior").start()
         self.addCleanup(patch.stopall)
 
     @patch("utils.console.ask", return_value="Sito")
@@ -28,6 +28,13 @@ class TestCreateCharacter(unittest.TestCase):
         self.assertEqual(self.gm._data.name, "Sito")
         self.assertEqual(mock_ask.call_count, 1)
         self.save.assert_called_once_with(self.gm._data)
+
+    @patch("utils.console.ask", return_value="Sito")
+    def test_character_starts_with_class_weapon(self, mock_ask, mock_print, mock_title):
+        self.gm._create_character()  # _choose_class is faked to return "warrior"
+
+        self.assertEqual(self.gm._data.cclass.name, "Warrior")
+        self.assertEqual(self.gm._data.weapon.name, "Sword")
 
     @patch("utils.console.ask", side_effect=["", "ab", "x1y", "Sito"])
     def test_retries_until_name_is_valid(self, mock_ask, mock_print, mock_title):
@@ -63,11 +70,11 @@ class TestChooseClass(unittest.TestCase):
 
     def test_valid_choice_returns_class(self):
         self.menu.return_value = "2"
-        self.assertEqual(self.gm._choose_class().name, "Hunter")
+        self.assertEqual(self.gm._choose_class(), "hunter")
 
     def test_asks_again_after_invalid_choice(self):
         self.menu.side_effect = ["9", "warrior", "1"]  # two wrong answers, then Warrior
-        self.assertEqual(self.gm._choose_class().name, "Warrior")
+        self.assertEqual(self.gm._choose_class(), "warrior")
         self.assertEqual(self.error.call_count, 2)
 
 

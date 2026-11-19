@@ -19,6 +19,14 @@ CLASSES = {
     },
 }
 
+# Weapon each class starts with (keys of WEAPONS in prefabs/weapons.py).
+# It is not inside CLASSES because CLASSES is passed straight to CharacterClass.
+STARTER_WEAPONS = {
+    "warrior": "sword",
+    "hunter": "bow",
+    "rogue": "dagger",
+}
+
 
 def create_class(key):
     """Returns a new CharacterClass from the CLASSES key (warrior, hunter, rogue)."""
