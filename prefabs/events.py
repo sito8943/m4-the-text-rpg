@@ -2,9 +2,9 @@
 
 # Chance (in %) of each event when exploring. They must add up to 100.
 EVENT_CHANCES = {
-    "battle": 60,
+    "battle": 65,
     "nothing": 25,
-    "treasure": 15,
+    "treasure": 10,
 }
 
 EVENTS = {
