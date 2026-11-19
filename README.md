@@ -51,7 +51,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 - [x] Unit tests
 - [x] Inventory screen: list and use potions
 - [ ] Shop: buy items with gold
-- [x] Choose a class (warrior, hunter, rogue) when creating the character
+- [x] Choose a class (warrior, hunter, rogue) when creating the character, each with its starter weapon (sword, bow, dagger)
 - [x] Enemies from the D&D 5e API, with a local cache and prefab enemies as backup
 
 ## Graded points
@@ -107,7 +107,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 46 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, New Game, Main Menu, `exit` command), the inventory (`ActionManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 47 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory (`ActionManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
