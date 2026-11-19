@@ -17,6 +17,8 @@ class TestCreateCharacter(unittest.TestCase):
         # avoid writing game_data.txt and showing the welcome screen
         self.save = patch.object(self.gm._player_data_manager, "save_data").start()
         patch.object(self.gm._screen_manager, "print_event_screen").start()
+        # these tests only check the name, so the class is always the default one
+        patch.object(self.gm, "_choose_class", return_value=CharacterClass()).start()
         self.addCleanup(patch.stopall)
 
     @patch("utils.console.ask", return_value="Sito")
@@ -48,6 +50,25 @@ class TestCreateCharacter(unittest.TestCase):
 
         self.assertEqual(mock_ask.call_count, 2)
         self.assertEqual(self.gm._data.name, "Sito")
+
+
+class TestChooseClass(unittest.TestCase):
+
+    def setUp(self):
+        self.gm = GameManager()
+        # the player's answers are given by each test; no real screen is shown
+        self.menu = patch.object(self.gm._screen_manager, "print_menu").start()
+        self.error = patch.object(self.gm._screen_manager, "message").start()
+        self.addCleanup(patch.stopall)
+
+    def test_valid_choice_returns_class(self):
+        self.menu.return_value = "2"
+        self.assertEqual(self.gm._choose_class().name, "Hunter")
+
+    def test_asks_again_after_invalid_choice(self):
+        self.menu.side_effect = ["9", "warrior", "1"]  # two wrong answers, then Warrior
+        self.assertEqual(self.gm._choose_class().name, "Warrior")
+        self.assertEqual(self.error.call_count, 2)
 
 
 class TestNewGame(unittest.TestCase):

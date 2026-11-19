@@ -11,14 +11,17 @@ class ScreenManager:
 
     # --- Screens ---
 
-    def print_menu(self, title, options, header=(), style="cyan"):
-        """Shows a menu with optional header lines and numbered options. Returns the choice."""
+    def print_menu(self, title, options, header=(), style="cyan", story=()):
+        """Shows a menu with optional header lines and numbered options. Returns the choice.
+        The story lines (optional) are printed letter by letter under the menu."""
         lines = list(header)
         if lines:
             lines.append("")
         for number, label in enumerate(options, start=1):
             lines.append(f"{number}. {label}")
         utils.console.show_screen(title, lines, style)
+        for line in story:
+            utils.console.slow_print(line, style=f"italic {style}")
         return utils.console.ask().strip().lower()
 
     def message(self, message="", title="Message", wait=0, pause=True, style="cyan"):
