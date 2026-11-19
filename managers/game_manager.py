@@ -74,7 +74,7 @@ class GameManager:
         options = {
             "1": lambda: self._action_manager.do_action("explore", data=self._data),
             "2": lambda: self._action_manager.do_action("character", data=self._data),
-            "3": lambda: self._action_manager.do_action("inventory"),
+            "3": lambda: self._action_manager.do_action("inventory", data=self._data),
             "4": lambda: self._action_manager.do_action("shop"),
             "5": lambda: self._action_manager.do_action("log"),
             "6": self._save_game,

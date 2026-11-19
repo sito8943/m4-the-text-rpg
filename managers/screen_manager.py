@@ -61,11 +61,6 @@ class ScreenManager:
         utils.console.show_screen(title, lines, style)
         utils.console.pause("Press Enter to continue.")
 
-    def print_inventory_screen(self):
-        """Shows the inventory screen."""
-        utils.console.show_screen("Inventory", ["Inventory is currently empty."])
-        utils.console.pause("Press Enter to return to the game menu.")
-
     def print_shop_screen(self):
         """Shows the shop screen."""
         utils.console.show_screen("Shop", ["Welcome to the shop!"])
