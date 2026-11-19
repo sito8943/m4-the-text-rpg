@@ -60,8 +60,3 @@ class ScreenManager:
         """Shows a panel with lines and waits for Enter."""
         utils.console.show_screen(title, lines, style)
         utils.console.pause("Press Enter to continue.")
-
-    def print_shop_screen(self):
-        """Shows the shop screen."""
-        utils.console.show_screen("Shop", ["Welcome to the shop!"])
-        utils.console.pause("Press Enter to return to the game menu.")

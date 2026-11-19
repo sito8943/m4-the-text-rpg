@@ -57,5 +57,58 @@ class TestInventory(unittest.TestCase):
         self.message.assert_called_once()
 
 
+# Character, Inventory and Wallet print to the console; the fake print keeps the test output clean
+@patch("builtins.print")
+class TestShop(unittest.TestCase):
+
+    def setUp(self):
+        self.actions = ActionManager()
+        # starts "Unarmed" (damage 1), so every weapon is on sale:
+        # 1 Potion, 2 Sword, 3 Axe, 4 War Hammer, 5 Back
+        self.hero = Character("Sito", CharacterClass(), Weapon(), Inventory())
+        # the player's answers are given by each test; no real screen is shown
+        self.menu = patch.object(self.actions._screen_manager, "print_menu").start()
+        self.message = patch.object(self.actions._screen_manager, "message").start()
+        self.addCleanup(patch.stopall)
+
+    def test_buy_potion_with_enough_gold(self, _):
+        self.hero.wallet.gold = 20
+        self.menu.side_effect = ["1", "5"]  # buy a potion, then Back
+
+        self.actions._shop(self.hero)
+
+        self.assertEqual(self.hero.wallet.gold, 5)  # potion costs 15
+        self.assertEqual(len(self.hero.inventory.items), 1)
+
+    def test_cannot_buy_without_enough_gold(self, _):
+        self.hero.wallet.gold = 10
+        self.menu.side_effect = ["1", "5"]
+
+        self.actions._shop(self.hero)
+
+        self.assertEqual(self.hero.wallet.gold, 10)
+        self.assertEqual(len(self.hero.inventory.items), 0)
+
+    def test_buy_weapon_equips_it(self, _):
+        self.hero.wallet.gold = 50
+        # buy the Sword, then Back (Sword is no longer on sale, so Back is 4)
+        self.menu.side_effect = ["2", "4"]
+
+        self.actions._shop(self.hero)
+
+        self.assertEqual(self.hero.weapon.name, "Sword")
+        self.assertEqual(self.hero.wallet.gold, 10)  # sword costs 40
+
+    def test_only_better_weapons_are_on_sale(self, _):
+        self.hero.weapon = Weapon("Axe", 7)
+        self.menu.return_value = "3"  # Potion, War Hammer, Back
+
+        self.actions._shop(self.hero)
+
+        labels = self.menu.call_args[0][1]  # second argument given to print_menu
+        self.assertEqual(len(labels), 3)
+        self.assertIn("War Hammer", labels[1])
+
+
 if __name__ == "__main__":
     unittest.main()

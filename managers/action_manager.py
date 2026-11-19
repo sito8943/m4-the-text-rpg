@@ -4,6 +4,9 @@ import utils.stats as st
 import managers.screen_manager as sm
 import managers.event_manager as em
 import managers.log_manager as lm
+from prefabs.items import ITEMS, create_item
+from prefabs.weapons import WEAPONS, create_weapon
+from prefabs.shop import SHOP_ITEMS, SHOP_WEAPONS
 
 class ActionManager:
     """Runs the actions chosen in the game menu."""
@@ -65,10 +68,47 @@ class ActionManager:
         self._screen_manager.message(f"You used {item.name} and recovered {character.hp - old_hp} HP.",
                                      title="Inventory", style="green")
 
-    def _shop(self):
-        """Shows the shop screen."""
-        self._screen_manager.print_shop_screen()
-        # Implement shop logic here
+    def _shop(self, character):
+        """Shows the shop in a loop. The player can buy potions and better weapons, or go back."""
+        while True:
+            # "1" -> (kind, key, price) of the first thing on sale... and the last number is Back
+            options = {}
+            labels = []
+            for key, price in SHOP_ITEMS.items():
+                item = ITEMS[key]
+                options[str(len(options) + 1)] = ("item", key, price)
+                labels.append(f"{item['name']:<11} {item['description']:<16} {price} g")
+            for key, price in SHOP_WEAPONS.items():
+                weapon = WEAPONS[key]
+                if weapon["damage"] > character.weapon.damage:
+                    options[str(len(options) + 1)] = ("weapon", key, price)
+                    labels.append(f"{weapon['name']:<11} {'Damage ' + str(weapon['damage']):<16} {price} g")
+            back = str(len(options) + 1)
+            labels.append("Back")
+
+            header = [f"Gold {character.wallet.gold}   Weapon: {character.weapon.name} ({character.weapon.damage})"]
+            choice = self._screen_manager.print_menu("Shop", labels, header, style="yellow")
+
+            if choice == back:
+                return
+            if choice in options:
+                kind, key, price = options[choice]
+                self._buy(character, kind, key, price)
+            else:
+                self._screen_manager.message("Invalid choice.", style="red")
+
+    def _buy(self, character, kind, key, price):
+        """Pays the price and gives the item (to the inventory) or the weapon (equipped). Fails without enough gold."""
+        if not character.wallet.spend_gold(price):
+            self._screen_manager.message(f"Not enough gold. You need {price} gold.", title="Shop", style="red")
+            return
+        if kind == "item":
+            bought = create_item(key)
+            character.inventory.add_item(bought)
+        else:
+            bought = create_weapon(key)
+            character.equip_weapon(bought)
+        self._screen_manager.message(f"You bought {bought.name} for {price} gold.", title="Shop", style="green")
 
     def do_action(self, action, data=None):
         """Runs the action with the given name (explore, character, inventory, shop or log)."""
@@ -77,7 +117,7 @@ class ActionManager:
         elif action == "inventory":
             self._inventory(data)
         elif action == "shop":
-            self._shop()
+            self._shop(data)
         elif action == "log":
             self._log_manager.show_log()
         elif action == "character":

@@ -9,6 +9,7 @@ WEAPONS = {
     "bow": {"name": "Bow", "damage": 4},
     "staff": {"name": "Staff", "damage": 3},
     "axe": {"name": "Axe", "damage": 7},
+    "war_hammer": {"name": "War Hammer", "damage": 10},
 }
 
 

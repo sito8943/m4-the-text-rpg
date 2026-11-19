@@ -75,7 +75,7 @@ class GameManager:
             "1": lambda: self._action_manager.do_action("explore", data=self._data),
             "2": lambda: self._action_manager.do_action("character", data=self._data),
             "3": lambda: self._action_manager.do_action("inventory", data=self._data),
-            "4": lambda: self._action_manager.do_action("shop"),
+            "4": lambda: self._action_manager.do_action("shop", data=self._data),
             "5": lambda: self._action_manager.do_action("log"),
             "6": self._save_game,
             "7": None,  # Main Menu: leave this loop and go back to the home screen
