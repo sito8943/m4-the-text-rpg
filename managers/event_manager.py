@@ -4,16 +4,18 @@ import random
 
 import managers.screen_manager as sm
 import managers.battle_manager as bm
+import managers.api_manager as api
 from prefabs.events import EVENT_TYPES, EVENTS, TREASURE_GOLD
-from prefabs.enemies import ENEMIES, create_enemy
+from prefabs.enemies import ENEMIES, create_enemy, create_api_enemy
 
 class EventManager:
     """Picks and runs exploration events."""
 
     def __init__(self):
-        """Creates the screen and battle managers used by the events."""
+        """Creates the screen, battle and API managers used by the events."""
         self._screen_manager = sm.ScreenManager()
         self._battle_manager = bm.BattleManager()
+        self._api_manager = api.ApiManager()
 
     def generate_event(self):
         """Returns a random event type from EVENT_TYPES."""
@@ -31,9 +33,9 @@ class EventManager:
             self._screen_manager.message(f"Unknown event type: {event_type}", style="red")
 
     def _trigger_battle_event(self, character):
-        """Spawns a random enemy at the character's level and starts a battle."""
+        """Spawns an enemy at the character's level and starts a battle."""
         event = EVENTS["battle"]
-        enemy = create_enemy(random.choice(list(ENEMIES)), level=character.level)
+        enemy = self._spawn_enemy(character.level)
         story = event["story"] + (f"A wild {enemy.name} appears! Prepare for battle!",)
         self._screen_manager.print_event_screen(event["title"], story, event["style"])
         self._battle_manager.start(character, enemy)
@@ -50,3 +52,10 @@ class EventManager:
         """Shows the 'nothing happens' story."""
         event = EVENTS["nothing"]
         self._screen_manager.print_event_screen(event["title"], event["story"], event["style"])
+
+    def _spawn_enemy(self, level):
+        """Returns a D&D API monster for the level, or a random prefab enemy if the API fails."""
+        monster = self._api_manager.fetch_monster(level)
+        if monster:
+            return create_api_enemy(monster, level=level)
+        return create_enemy(random.choice(list(ENEMIES)), level=level)
