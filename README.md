@@ -1,22 +1,25 @@
 # THE TEXT-BASED RPG
 
+> **Not Ogabek?** This README is the project report for grading. To install and play the game, read [HOW_TO.md](HOW_TO.md).
+
 ## Authors
 - Carlos Andrés Mora González
 
 ## Description
 This is an event-driven, text-based role-playing game (RPG) that runs in the terminal. In it, you create your character and venture into the vast world of the "terminal void"—an environment filled with characters and combat.
 
-You can explore, fight enemies in turn-based battles, find treasure, level up, check your character sheet, read the battle log and save your progress. Everything happens from an interactive menu; the game only closes when you choose **Exit**.
+You can explore, fight enemies in turn-based battles, find treasure, level up, check your character sheet, read the battle log and save your progress. Everything happens from an interactive menu; the game only closes when you choose **Exit** or type `exit`.
 
 ## Purpose
 Give the player a small, replayable adventure in the terminal, and practise building a real Python project: split into modules, with saved data, a log file, input validation and unit tests.
 
 ## How to run
-
 ```
 pip3 install -r requirements.txt
 python3 ./main.py
 ```
+
+Requirements, step-by-step setup and how to play: see [HOW_TO.md](HOW_TO.md).
 
 ## How to run tests
 ```
