@@ -8,7 +8,7 @@ import managers.log_manager as lm
 
 FLEE_CHANCE = 0.5
 VICTORY_HEAL = 0.3
-BATTLE_OPTIONS = ("1. Attack", "2. Use potion", "3. Flee")
+BATTLE_OPTIONS = ("Attack", "Use potion", "Flee")
 
 class BattleManager:
     """Runs a battle loop and writes every turn to the battle log."""
@@ -29,8 +29,7 @@ class BattleManager:
         }
 
         while st.is_alive(character.hp) and st.is_alive(enemy.hp):
-            choice = self._screen_manager.print_info_screen(
-                "Battle", self._status(character, enemy), "red", prompt="Choose your action: ")
+            choice = self._screen_manager.print_menu("Battle", BATTLE_OPTIONS, self._status(character, enemy), "red")
             if choice not in actions:
                 self._screen_manager.message("Invalid choice.", style="red")
                 continue
@@ -48,12 +47,11 @@ class BattleManager:
             self._defeat(character, enemy)
 
     def _status(self, character, enemy):
-        """Returns the lines with both HP bars and the battle options."""
+        """Returns the HP lines of the character and the enemy."""
         return [
             f"{character.name}  HP {character.hp}/{st.max_hp(character.cclass, character.level)}",
             f"{enemy.name}  HP {enemy.hp}/{st.max_hp(enemy.cclass, enemy.level)}",
-            "",
-        ] + list(BATTLE_OPTIONS)
+        ]
 
     def _attack(self, attacker, target):
         """Makes the attacker hit the target, logs it and returns the turn text."""

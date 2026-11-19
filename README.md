@@ -58,6 +58,7 @@ List of the criteria this project covers and where to find them.
 
 ### Menu
 - **Interactive menu:** `GameManager._home_screen` and `GameManager._game_menu` (`managers/game_manager.py`) show the menus in a `while True` loop. After any action the program goes back to the menu.
+- **One menu function:** home, game and battle menus are all drawn by `ScreenManager.print_menu`, so they look and behave the same.
 - **Exit only with a specific command:** the program closes only with the **Exit** option (`GameManager._exit_game`).
 - **Well-thought-out design:** `utils/console.py` uses `rich` for coloured panels and titles; `slow_print` writes story text letter by letter; `ScreenManager.message` can add delays (`wait`).
 
@@ -90,7 +91,6 @@ List of the criteria this project covers and where to find them.
 ### Exceptions
 - `FileManager.read_file` handles `FileNotFoundError` (creates the file).
 - `PlayerDataManager.load_data` handles `json.JSONDecodeError` (broken save file).
-- `GameManager._game_menu` handles `ValueError` (text instead of a number).
 - `ApiManager.fetch_monster` handles `URLError` (no internet), `TimeoutError` (slow API), `json.JSONDecodeError` (bad answer) and `KeyError` (missing fields), and falls back to the cache.
 - `ApiManager._load_cache` handles `json.JSONDecodeError` (broken cache file).
 

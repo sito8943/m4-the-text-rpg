@@ -11,6 +11,7 @@ from models.inventory import Inventory
 from prefabs.items import create_item
 
 STARTER_POTIONS = 2
+GAME_OPTIONS = ("Explore", "Character", "Inventory", "Shop", "Log", "Save", "Exit")
 
 class GameManager:
     """Controls the game lifecycle and the main menus."""
@@ -41,7 +42,6 @@ class GameManager:
     # --- Menus ---
 
     def _home_screen(self):
-
         """Shows the home menu in a loop until the player exits."""
         options = {
             "1": self._game_menu,
@@ -49,7 +49,8 @@ class GameManager:
         }
 
         while True:
-            choice = self._screen_manager.print_main_menu(data=self._data)
+            labels = ("Continue Game" if self._data else "Start Game", "Exit")
+            choice = self._screen_manager.print_menu("Welcome THE TEXT RPG!", labels)
             if choice in options:
                 options[choice]()
             else:
@@ -61,22 +62,17 @@ class GameManager:
             self._create_character()
 
         options = {
-            1: lambda: self._action_manager.do_action("explore", data=self._data),
-            2: lambda: self._action_manager.do_action("character", data=self._data),
-            3: lambda: self._action_manager.do_action("inventory"),
-            4: lambda: self._action_manager.do_action("shop"),
-            5: lambda: self._action_manager.do_action("log"),
-            6: self._save_game,
-            7: self._exit_game
+            "1": lambda: self._action_manager.do_action("explore", data=self._data),
+            "2": lambda: self._action_manager.do_action("character", data=self._data),
+            "3": lambda: self._action_manager.do_action("inventory"),
+            "4": lambda: self._action_manager.do_action("shop"),
+            "5": lambda: self._action_manager.do_action("log"),
+            "6": self._save_game,
+            "7": self._exit_game
         }
 
         while True:
-            choice = self._screen_manager.print_game_menu()
-            try:
-                choice = int(choice)
-            except ValueError:
-                self._screen_manager.message("Invalid input. Please enter a number.", style="red")
-                continue
+            choice = self._screen_manager.print_menu("Game Menu", GAME_OPTIONS)
             if choice in options:
                 options[choice]()
             else:

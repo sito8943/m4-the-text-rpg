@@ -11,11 +11,15 @@ class ScreenManager:
 
     # --- Screens ---
 
-    def print_main_menu(self, data=None):
-        """Shows the home menu and returns the player's choice."""
-        first_option = "1. Continue Game" if data else "1. Start Game"
-        utils.console.show_screen("Welcome THE TEXT RPG!", [first_option, "2. Exit"])
-        return utils.console.ask()
+    def print_menu(self, title, options, header=(), style="cyan"):
+        """Shows a menu with optional header lines and numbered options. Returns the choice."""
+        lines = list(header)
+        if lines:
+            lines.append("")
+        for number, label in enumerate(options, start=1):
+            lines.append(f"{number}. {label}")
+        utils.console.show_screen(title, lines, style)
+        return utils.console.ask().strip()
 
     def message(self, message="", title="Message", wait=0, pause=True, style="cyan"):
         """Shows a message panel. Can wait some seconds and/or wait for Enter."""
@@ -49,11 +53,9 @@ class ScreenManager:
             utils.console.slow_print(line, style=f"italic {style}")
         utils.console.pause("Press Enter to continue.")
 
-    def print_info_screen(self, title, lines=(), style="cyan", prompt=None):
-        """Shows a panel with lines. Returns the answer if a prompt is given."""
+    def print_info_screen(self, title, lines=(), style="cyan"):
+        """Shows a panel with lines and waits for Enter."""
         utils.console.show_screen(title, lines, style)
-        if prompt:
-            return utils.console.ask(prompt)
         utils.console.pause("Press Enter to continue.")
 
     def print_inventory_screen(self):
@@ -65,16 +67,3 @@ class ScreenManager:
         """Shows the shop screen."""
         utils.console.show_screen("Shop", ["Welcome to the shop!"])
         utils.console.pause("Press Enter to return to the game menu.")
-
-    def print_game_menu(self):
-        """Shows the game menu and returns the player's choice."""
-        utils.console.show_screen("Game Menu", [
-            "1. Explore",
-            "2. Character",
-            "3. Inventory",
-            "4. Shop",
-            "5. Log",
-            "6. Save",
-            "7. Exit",
-        ])
-        return utils.console.ask()
