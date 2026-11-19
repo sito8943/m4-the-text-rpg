@@ -92,6 +92,27 @@ class TestGameMenu(unittest.TestCase):
 
         menu.assert_called_once()
 
+    def test_exit_command_closes_game_menu(self):
+        gm = GameManager()
+        gm._data = Character("Sito", CharacterClass(), Weapon(), Inventory())
+        with patch.object(gm._screen_manager, "print_menu", return_value="exit"), \
+             patch.object(gm._screen_manager, "message"):
+            with self.assertRaises(SystemExit):
+                gm._game_menu()
+
+    def test_exit_command_closes_home_menu(self):
+        gm = GameManager()
+        with patch.object(gm._screen_manager, "print_menu", return_value="exit"), \
+             patch.object(gm._screen_manager, "message"):
+            with self.assertRaises(SystemExit):
+                gm._home_screen()
+
+    @patch("utils.console.show_screen")
+    @patch("utils.console.ask", return_value="  EXIT ")
+    def test_menu_choice_is_lowercase_and_stripped(self, mock_ask, mock_screen):
+        gm = GameManager()
+        self.assertEqual(gm._screen_manager.print_menu("Menu", ("A",)), "exit")
+
 
 if __name__ == "__main__":
     unittest.main()

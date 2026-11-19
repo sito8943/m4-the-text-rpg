@@ -19,7 +19,7 @@ class ScreenManager:
         for number, label in enumerate(options, start=1):
             lines.append(f"{number}. {label}")
         utils.console.show_screen(title, lines, style)
-        return utils.console.ask().strip()
+        return utils.console.ask().strip().lower()
 
     def message(self, message="", title="Message", wait=0, pause=True, style="cyan"):
         """Shows a message panel. Can wait some seconds and/or wait for Enter."""

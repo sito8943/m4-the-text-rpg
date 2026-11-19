@@ -11,8 +11,9 @@ from models.inventory import Inventory
 from prefabs.items import create_item
 
 STARTER_POTIONS = 2
-HOME_OPTIONS = ("New Game", "Exit")
-GAME_OPTIONS = ("Explore", "Character", "Inventory", "Shop", "Log", "Save", "Main Menu", "Exit")
+EXIT_COMMAND = "exit"
+HOME_OPTIONS = ("New Game", "Exit (or type exit)")
+GAME_OPTIONS = ("Explore", "Character", "Inventory", "Shop", "Log", "Save", "Main Menu", "Exit (or type exit)")
 NEW_GAME_OPTIONS = ("Yes, start over", "No, go back")
 
 class GameManager:
@@ -48,7 +49,8 @@ class GameManager:
         options = {
             "1": self._game_menu,
             "2": self._new_game,
-            "3": self._exit_game
+            "3": self._exit_game,
+            EXIT_COMMAND: self._exit_game
         }
 
         while True:
@@ -73,7 +75,8 @@ class GameManager:
             "5": lambda: self._action_manager.do_action("log"),
             "6": self._save_game,
             "7": None,  # Main Menu: leave this loop and go back to the home screen
-            "8": self._exit_game
+            "8": self._exit_game,
+            EXIT_COMMAND: self._exit_game
         }
 
         while True:
