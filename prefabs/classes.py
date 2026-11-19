@@ -6,16 +6,16 @@ from models.character_class import CharacterClass
 # The "mp" values are kept so spells can use them later.
 CLASSES = {
     "warrior": {
-        "name": "Warrior", "hp": 120, "mp": 20, "atk": 12, "defense": 8,
-        "hp_multiplier": 1.5, "mp_multiplier": 0.5, "atk_multiplier": 1.2, "defense_multiplier": 1.3,
+        "name": "Warrior", "hp": 100, "mp": 20, "atk": 10, "defense": 2,
+        "hp_multiplier": 2, "mp_multiplier": 0.5, "atk_multiplier": 1, "defense_multiplier": 0.8,
     },
     "hunter": {
-        "name": "Hunter", "hp": 100, "mp": 30, "atk": 13, "defense": 6,
-        "hp_multiplier": 1.1, "mp_multiplier": 0.8, "atk_multiplier": 1.4, "defense_multiplier": 1.0,
+        "name": "Hunter", "hp": 80, "mp": 30, "atk": 11, "defense": 1,
+        "hp_multiplier": 1.2, "mp_multiplier": 0.8, "atk_multiplier": 1.2, "defense_multiplier": 0.4,
     },
     "rogue": {
-        "name": "Rogue", "hp": 95, "mp": 40, "atk": 14, "defense": 5,
-        "hp_multiplier": 1.0, "mp_multiplier": 0.8, "atk_multiplier": 1.6, "defense_multiplier": 0.9,
+        "name": "Rogue", "hp": 75, "mp": 40, "atk": 12, "defense": 0,
+        "hp_multiplier": 0.8, "mp_multiplier": 0.8, "atk_multiplier": 1.5, "defense_multiplier": 0.2,
     },
 }
 

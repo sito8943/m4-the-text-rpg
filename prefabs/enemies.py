@@ -14,15 +14,15 @@ ENEMIES = {
     },
     "goblin": {
         "name": "Goblin", "weapon": "dagger", "xp_reward": 10, "gold_reward": 5,
-        "cclass": {"name": "Goblin", "hp": 60, "mp": 10, "atk": 7, "defense": 3},
+        "cclass": {"name": "Goblin", "hp": 60, "mp": 10, "atk": 10, "defense": 3},
     },
     "wolf": {
         "name": "Wolf", "weapon": "unarmed", "xp_reward": 12, "gold_reward": 3,
-        "cclass": {"name": "Wolf", "hp": 70, "mp": 0, "atk": 10, "defense": 2},
+        "cclass": {"name": "Wolf", "hp": 70, "mp": 0, "atk": 14, "defense": 2},
     },
     "orc": {
         "name": "Orc", "weapon": "axe", "xp_reward": 25, "gold_reward": 15,
-        "cclass": {"name": "Orc", "hp": 120, "mp": 0, "atk": 12, "defense": 6,
+        "cclass": {"name": "Orc", "hp": 120, "mp": 0, "atk": 18, "defense": 6,
                    "hp_multiplier": 1.5},
     },
 }
