@@ -34,7 +34,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 | `main.py` | Entry point. Only creates the `GameManager` and starts the game. |
 | `managers/` | Game logic: menus, actions, events, battles, API, files, log, save/load, screens and validation. |
 | `models/` | Game objects: `Character`, `Enemy`, `CharacterClass`, `Weapon`, `Item`, `Inventory`, `Wallet`. |
-| `prefabs/` | Game data: classes, enemies, weapons, items, events and validation rules. |
+| `prefabs/` | Game data: classes, enemies, weapons, items, shop prices, events and validation rules. |
 | `utils/` | Helpers: console drawing (`console.py`) and stat formulas (`stats.py`). |
 | `tests/` | Unit tests (`unittest`). |
 
@@ -45,12 +45,12 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 - [x] Explore with random events (battle, treasure, nothing)
 - [x] Turn-based battles (attack, use potion, flee)
 - [x] XP, levels and gold
-- [x] Save and load the game (`game_data.txt`)
+- [x] Save and load the game (`game_data.json`)
 - [x] Battle log file (`battle_log.txt`) with a screen to read it
 - [x] Coloured screens and slow-printed text with `rich`
 - [x] Unit tests
 - [x] Inventory screen: list and use potions
-- [ ] Shop: buy items with gold
+- [x] Shop: buy potions and better weapons with gold
 - [x] Choose a class (warrior, hunter, rogue) when creating the character, each with its starter weapon (sword, bow, dagger)
 - [x] Enemies from the D&D 5e API, with a local cache and prefab enemies as backup
 
@@ -70,7 +70,7 @@ List of the criteria this project covers and where to find them.
 - No file has more than 300 lines (the biggest has about 100).
 
 ### External files
-- **Save data:** `PlayerDataManager.save_data` / `load_data` (`managers/player_data_manager.py`) save and load the character as JSON in `game_data.txt`.
+- **Save data:** `PlayerDataManager.save_data` / `load_data` (`managers/player_data_manager.py`) save and load the character as JSON in `game_data.json`.
 - **Log file:** every battle turn is written to `battle_log.txt` instead of being kept only on screen.
   - Send new data to the file: `LogManager.write_log`.
   - Display the contents of the file: `LogManager.show_log` (menu option **5. Log**).
@@ -85,10 +85,10 @@ List of the criteria this project covers and where to find them.
 - If there is no internet: a cached monster is used. If there is no cache either: an enemy from `prefabs/enemies.py` is used (`EventManager._spawn_enemy`).
 
 ### Data structures
-- **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`, `EVENT_CHANCES`), save data (`to_dict` / `from_dict`).
+- **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`, `EVENT_CHANCES`, `SHOP_ITEMS`, `SHOP_WEAPONS`), save data (`to_dict` / `from_dict`).
 - **list:** inventory items (`Inventory.items`, shown and used in `ActionManager._inventory`), battle turn text, log lines.
 - **set:** enemies already defeated (`Character.defeated_enemies`), so each name is stored once.
-- **tuple:** fixed data that never changes: `BATTLE_OPTIONS`, `GAME_OPTIONS`, `TREASURE_GOLD`, event stories.
+- **tuple:** fixed data that never changes: `BATTLE_OPTIONS`, `GAME_OPTIONS`, `TREASURE_GOLD`, event stories, and each shop offer `(kind, key, price)` in `ActionManager._shop`.
 
 ### Exceptions
 - `FileManager.read_file` handles `FileNotFoundError` (creates the file).
@@ -107,7 +107,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 51 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory (`ActionManager`), event chances (`EventManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 55 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).

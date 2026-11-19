@@ -14,7 +14,7 @@ class TestCreateCharacter(unittest.TestCase):
 
     def setUp(self):
         self.gm = GameManager()
-        # avoid writing game_data.txt and showing the welcome screen
+        # avoid writing game_data.json and showing the welcome screen
         self.save = patch.object(self.gm._player_data_manager, "save_data").start()
         patch.object(self.gm._screen_manager, "print_event_screen").start()
         # these tests only check the name, so the class is always the warrior
