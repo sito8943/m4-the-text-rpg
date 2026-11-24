@@ -42,20 +42,19 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 | `tests/` | Unit tests (`unittest`). |
 
 ## Todolist
-- [x] Interactive menu that returns after every action
-- [x] New Game and Main Menu options to start over without restarting the app
-- [x] Character creation with name validation
-- [x] Explore with random events (battle, treasure, nothing)
-- [x] Turn-based battles (attack, use potion, flee)
-- [x] XP, levels and gold
-- [x] Save and load the game (`game_data.json`)
-- [x] Battle log file (`battle_log.txt`) with a screen to read it
-- [x] Coloured screens and slow-printed text with `rich`
-- [x] Unit tests
-- [x] Inventory screen: list and use potions
-- [x] Shop: buy potions and better weapons with gold
-- [x] Choose a class (warrior, hunter, rogue) when creating the character, each with its starter weapon (sword, bow, dagger)
-- [x] Enemies from the D&D 5e API, with a local cache and prefab enemies as backup
+- [ ] Generator function (`yield`)
+- [ ] Custom decorator
+- [ ] `.env` file for config/secrets with `python-dotenv` (+ `.env.example`, `.env` in `.gitignore`)
+- [ ] Work on branches and merge through pull requests
+- [ ] Logging with the `logging` module
+- [ ] Save data in a SQL database (`sqlite3`) instead of JSON
+- [ ] Connect an AI
+- [ ] Atomic commits on new days
+- [ ] GIF/video of the game in the README
+- [ ] Link the public APK deploy in the README
+- [ ] README: Screenshots, Usage, Approximate Total, Acknowledgments and Support sections
+- [ ] README "Graded points": add the new final criteria
+- [ ] On-time submission
 
 ## Graded points
 List of the criteria this project covers and where to find them.
