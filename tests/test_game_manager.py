@@ -86,6 +86,8 @@ class TestNewGame(unittest.TestCase):
         # don't open the real game menu
         self.game_menu = patch.object(self.gm, "_game_menu").start()
         self.menu = patch.object(self.gm._screen_manager, "print_menu").start()
+        # don't empty the real battle_log.txt
+        self.clear_log = patch.object(self.gm._log_manager, "clear_log").start()
         self.addCleanup(patch.stopall)
 
     def test_confirm_removes_character_and_starts(self):
@@ -94,6 +96,7 @@ class TestNewGame(unittest.TestCase):
 
         self.assertIsNone(self.gm._data)
         self.game_menu.assert_called_once()
+        self.clear_log.assert_called_once()
 
     def test_cancel_keeps_character(self):
         self.menu.return_value = "2"
@@ -101,6 +104,7 @@ class TestNewGame(unittest.TestCase):
 
         self.assertEqual(self.gm._data.name, "Old")
         self.game_menu.assert_not_called()
+        self.clear_log.assert_not_called()
 
     def test_without_character_starts_without_asking(self):
         self.gm._data = None
