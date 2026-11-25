@@ -21,7 +21,19 @@ class LogManager:
 
     def show_log(self):
         """Shows the last LOG_LINES_SHOWN lines of the log file."""
-        lines = self._file_manager.read_file().splitlines()[-LOG_LINES_SHOWN:]
+        lines = list(self._file_manager.read_lines())[-LOG_LINES_SHOWN:]
         if not lines:
             lines = ["Log is empty."]
         self._screen_manager.print_info_screen("Battle Log", lines)
+
+    def count_wins(self, name):
+        """Counts the battles won by the character in the log file."""
+        wins = 0
+        for line in self._file_manager.read_lines():
+            if f"| {name} defeated " in line:
+                wins += 1
+        return wins
+
+    def clear_log(self):
+        """Empties the log file."""
+        self._file_manager.write_file("")
