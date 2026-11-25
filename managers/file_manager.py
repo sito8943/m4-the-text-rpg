@@ -16,6 +16,15 @@ class FileManager:
             with open(self.filename, 'w') as file:
                 return ""
 
+    def read_lines(self):
+        """Yields the file lines one by one."""
+        try:
+            with open(self.filename, 'r') as file:
+                for line in file:
+                    yield line.strip()
+        except FileNotFoundError:
+            return
+
     def append_file(self, content):
         """Adds content to the end of the file."""
         with open(self.filename, 'a') as file:
