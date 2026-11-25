@@ -46,7 +46,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 - [x] Custom decorator
 - [ ] `.env` file for config/secrets with `python-dotenv` (+ `.env.example`, `.env` in `.gitignore`)
 - [ ] Work on branches and merge through pull requests
-- [ ] Logging with the `logging` module
+- [x] Logging with the `logging` module
 - [ ] Save data in a SQL database (`sqlite3`) instead of JSON
 - [ ] Connect an AI
 - [ ] Atomic commits on new days
@@ -86,6 +86,13 @@ List of the criteria this project covers and where to find them.
 - Uses `urllib` from the standard library, so no extra package is needed.
 - If there is no internet: a cached monster is used. If there is no cache either: an enemy from `prefabs/enemies.py` is used (`EventManager._spawn_enemy`).
 
+### Logging
+- The `logging` module writes a technical log to `game.log` (for the developer). It is separate from `battle_log.txt`, which is part of the game and is shown to the player.
+- Set up once in `GameManager.start_game` with `logging.basicConfig` (file, level `INFO`, format `date | level | message`).
+- **info:** game started, game loaded, game saved, new game, game closed (`GameManager`, `PlayerDataManager`).
+- **warning:** the API fails and the cache is used (`ApiManager.fetch_monster`), or both fail and a prefab enemy is used (`EventManager._spawn_enemy`).
+- **error:** broken save file (`PlayerDataManager.load_data`) or broken monster cache (`ApiManager._load_cache`).
+
 ### Data structures
 - **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`, `EVENT_CHANCES`, `SHOP_ITEMS`, `SHOP_WEAPONS`), save data (`to_dict` / `from_dict`).
 - **list:** inventory items (`Inventory.items`, shown and used in `ActionManager._inventory`), battle turn text, log lines.
@@ -111,7 +118,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 63 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 66 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator, `logging` messages (`assertLogs`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
