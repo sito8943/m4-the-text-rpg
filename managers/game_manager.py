@@ -1,5 +1,7 @@
 """Main game flow: home screen, game menu, character creation and exit."""
 
+import logging
+
 import managers.player_data_manager as pdm
 import managers.screen_manager as sm
 import managers.action_manager as am
@@ -38,7 +40,14 @@ class GameManager:
     # --- Lifecycle ---
 
     def start_game(self):
-        """Loads the saved data and opens the home screen."""
+        """Sets up logging, loads the saved data and opens the home screen."""
+        logging.basicConfig(
+            filename="game.log",
+            level=logging.INFO,
+            format="%(asctime)s | %(levelname)s | %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+        logging.info("Game started")
         self.status = "started"
         self._data = self._player_data_manager.load_data()
         self._home_screen()
@@ -46,6 +55,7 @@ class GameManager:
     def _exit_game(self):
         """Shows a goodbye message and closes the program."""
         self._screen_manager.message("Exiting the game. Goodbye!", wait=1, pause=False, style="magenta")
+        logging.info("Game closed")
         exit()
 
     # --- Menus ---
@@ -105,6 +115,7 @@ class GameManager:
                 return
         self._log_manager.clear_log()
         self._data = None
+        logging.info("New game started, battle log cleared")
         self._game_menu()
 
     # --- Save / Load ---
@@ -112,6 +123,7 @@ class GameManager:
     def _save_game(self):
         """Saves the current character to the save file."""
         self._player_data_manager.save_data(self._data)
+        logging.info(f"Game saved: {self._data.name}")
 
     # --- Character ---
 
