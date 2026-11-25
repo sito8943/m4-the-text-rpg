@@ -4,6 +4,7 @@ import managers.player_data_manager as pdm
 import managers.screen_manager as sm
 import managers.action_manager as am
 import managers.validation_manager as vm
+import managers.log_manager as lm
 from models.character import Character
 from models.inventory import Inventory
 from prefabs.items import create_item
@@ -32,6 +33,7 @@ class GameManager:
         self._action_manager = am.ActionManager()
         self._player_data_manager = pdm.PlayerDataManager()
         self._screen_manager = sm.ScreenManager()
+        self._log_manager = lm.LogManager()
 
     # --- Lifecycle ---
 
@@ -101,6 +103,7 @@ class GameManager:
             ), style="red")
             if choice != "1":
                 return
+        self._log_manager.clear_log()
         self._data = None
         self._game_menu()
 
