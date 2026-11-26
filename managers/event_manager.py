@@ -1,6 +1,7 @@
 """Random exploration events: battle, treasure or nothing."""
 
 import random
+import logging
 
 import managers.screen_manager as sm
 import managers.battle_manager as bm
@@ -63,4 +64,5 @@ class EventManager:
         monster = self._api_manager.fetch_monster(level)
         if monster:
             return create_api_enemy(monster, level=level)
+        logging.warning("API and cache failed, using prefab enemy")
         return create_enemy(random.choice(list(ENEMIES)), level=level)

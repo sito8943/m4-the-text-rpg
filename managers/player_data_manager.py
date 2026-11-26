@@ -1,6 +1,7 @@
 """Save and load of the player's character as JSON."""
 
 import json
+import logging
 
 import managers.file_manager as fm
 import managers.screen_manager as sm
@@ -27,9 +28,11 @@ class PlayerDataManager:
                 player_data_dict = json.loads(player_data)
             except json.JSONDecodeError:
                 self._screen_manager.message("Save file is invalid or outdated. Starting fresh.", wait=1, pause=False, style="red")
+                logging.error("Save file is invalid, starting fresh")
                 return None
             data = Character.from_dict(player_data_dict)
             self._screen_manager.message(f"Game data loaded: character name is {data.name}", wait=1, pause=False, style="green")
+            logging.info(f"Game loaded: {data.name}")
             return data
         else:
             self._screen_manager.message("No game data found. Starting fresh.", wait=1, pause=False)

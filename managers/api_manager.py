@@ -2,6 +2,7 @@
 
 import json
 import random
+import logging
 import urllib.error
 import urllib.request
 
@@ -45,15 +46,19 @@ class ApiManager:
             return self._cache["monsters"][index]
         except urllib.error.URLError:
             # no internet or the API is down
+            logging.warning("API not reachable, using cache")
             return self._cached_monster(ratings)
         except TimeoutError:
             # the API took too long to answer
+            logging.warning("API timed out, using cache")
             return self._cached_monster(ratings)
         except json.JSONDecodeError:
             # the API answered something that is not JSON
+            logging.warning("API answered invalid JSON, using cache")
             return self._cached_monster(ratings)
         except KeyError:
             # the JSON does not have the fields we expect
+            logging.warning("API monster is missing fields, using cache")
             return self._cached_monster(ratings)
 
     def _cached_monster(self, ratings):
@@ -98,6 +103,7 @@ class ApiManager:
         try:
             cache = json.loads(self._file_manager.read_file() or "{}")
         except json.JSONDecodeError:
+            logging.error("Monster cache file is invalid, starting an empty cache")
             cache = {}
         cache.setdefault("lists", {})
         cache.setdefault("monsters", {})
