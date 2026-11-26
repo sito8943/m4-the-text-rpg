@@ -206,11 +206,11 @@ m4-the-text-rpg/
 Created while playing (ignored by Git): `game.db` (save), `battle_log.txt` (battle log), `game.log` (technical log), `monsters_cache.json` (API cache).
 
 ## Acknowledgments
-- [D&D 5e API](https://www.dnd5eapi.co) for the monsters.
-- [Google Gemini](https://ai.google.dev) for the AI narrator.
-- [rich](https://github.com/Textualize/rich) for the colours and panels, and [python-dotenv](https://github.com/theskumar/python-dotenv) for the `.env` file.
-- Ogabek and the Python II course at Harbour.Space.
-- [Claude Code](https://claude.com/claude-code) as a coding assistant for explanations, code reviews and tests.
+- 👾 [D&D 5e API](https://www.dnd5eapi.co) for the monsters.
+- 🤖 [Google Gemini](https://ai.google.dev) for the AI narrator.
+- ✨ [rich](https://github.com/Textualize/rich) for the colours and panels, and [python-dotenv](https://github.com/theskumar/python-dotenv) for the `.env` file. 
+- 😏 Ogabek and the Python II course at Harbour.Space.
+- 🧡 [Claude Code](https://claude.com/claude-code) as a coding assistant for explanations, code reviews and tests. 
 
 ## Team Members
 - Carlos Andrés Mora González, GitHub: [@sito8943](https://github.com/sito8943)
