@@ -16,6 +16,7 @@ Give the player a small, replayable adventure in the terminal, and practise buil
 ## How to run
 ```
 pip3 install -r requirements.txt
+cp .env.example .env   # optional: the game has default values
 python3 ./main.py
 ```
 
@@ -34,17 +35,17 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 
 | Folder | Content |
 |---|---|
-| `main.py` | Entry point. Only creates the `GameManager` and starts the game. |
+| `main.py` | Entry point. Only loads the config (`config.setup`), creates the `GameManager` and starts the game. |
 | `managers/` | Game logic: menus, actions, events, battles, API, files, log, save/load, screens and validation. |
 | `models/` | Game objects: `Character`, `Enemy`, `CharacterClass`, `Weapon`, `Item`, `Inventory`, `Wallet`. |
 | `prefabs/` | Game data: classes, enemies, weapons, items, shop prices, events and validation rules. |
-| `utils/` | Helpers: console drawing (`console.py`), stat formulas (`stats.py`) and custom decorators (`decorators.py`). |
+| `utils/` | Helpers: `.env` and logging setup (`config.py`), console drawing (`console.py`), stat formulas (`stats.py`) and custom decorators (`decorators.py`). |
 | `tests/` | Unit tests (`unittest`). |
 
 ## Todolist
 - [x] Generator function (`yield`)
 - [x] Custom decorator
-- [ ] `.env` file for config/secrets with `python-dotenv` (+ `.env.example`, `.env` in `.gitignore`)
+- [x] `.env` file for config/secrets with `python-dotenv` (+ `.env.example`, `.env` in `.gitignore`)
 - [ ] Work on branches and merge through pull requests
 - [x] Logging with the `logging` module
 - [ ] Save data in a SQL database (`sqlite3`) instead of JSON
@@ -67,7 +68,7 @@ List of the criteria this project covers and where to find them.
 - **Well-thought-out design:** `utils/console.py` uses `rich` for coloured panels and titles; `slow_print` writes story text letter by letter; `ScreenManager.message` can add delays (`wait`).
 
 ### Decomposition
-- `main.py` only calls `GameManager().start_game()`.
+- `main.py` only calls `config.setup()` and `GameManager().start_game()`.
 - All other functions are in separate modules (`managers/`, `models/`, `prefabs/`, `utils/`).
 - No file has more than 300 lines (the biggest has about 100).
 
@@ -86,9 +87,16 @@ List of the criteria this project covers and where to find them.
 - Uses `urllib` from the standard library, so no extra package is needed.
 - If there is no internet: a cached monster is used. If there is no cache either: an enemy from `prefabs/enemies.py` is used (`EventManager._spawn_enemy`).
 
+### Config (.env)
+- Settings live in a `.env` file, loaded with `python-dotenv` by `utils/config.py` (`setup`), which `main.py` calls first.
+- `.env.example` is the template in the repo. `.env` is in `.gitignore`, so secrets are never committed.
+- Values: `API_URL` and `API_TIMEOUT` (read in `ApiManager.__init__`), `LOG_LEVEL` (read in `config.setup`).
+- Every value has a default, so the game works without a `.env`.
+- Validation: `API_TIMEOUT` that is not a number (`ValueError`) and an unknown `LOG_LEVEL` use the default and write a warning to `game.log`.
+
 ### Logging
 - The `logging` module writes a technical log to `game.log` (for the developer). It is separate from `battle_log.txt`, which is part of the game and is shown to the player.
-- Set up once in `GameManager.start_game` with `logging.basicConfig` (file, level `INFO`, format `date | level | message`).
+- Set up once in `utils/config.py` (`setup`, called first in `main.py`) with `logging.basicConfig` (file, level `INFO`, format `date | level | message`).
 - **info:** game started, game loaded, game saved, new game, game closed (`GameManager`, `PlayerDataManager`).
 - **warning:** the API fails and the cache is used (`ApiManager.fetch_monster`), or both fail and a prefab enemy is used (`EventManager._spawn_enemy`).
 - **error:** broken save file (`PlayerDataManager.load_data`) or broken monster cache (`ApiManager._load_cache`).
@@ -118,7 +126,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 66 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator, `logging` messages (`assertLogs`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 69 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator, `logging` messages (`assertLogs`), `.env` values (`patch.dict(os.environ)`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
