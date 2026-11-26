@@ -14,7 +14,16 @@ Guide to install, open and play THE TEXT-BASED RPG.
    ```
    pip3 install -r requirements.txt
    ```
-3. Start the game:
+3. Optional: create your config file from the template. Without it, the game uses default values.
+   ```
+   cp .env.example .env
+   ```
+   | Value | What it does |
+   |---|---|
+   | `API_URL` | Address of the D&D 5e monsters API. |
+   | `API_TIMEOUT` | Seconds to wait for the API before using saved enemies. |
+   | `LOG_LEVEL` | Detail of `game.log`: `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`. |
+4. Start the game:
    ```
    python3 ./main.py
    ```
