@@ -7,6 +7,7 @@ import managers.log_manager as lm
 from prefabs.items import ITEMS, create_item
 from prefabs.weapons import WEAPONS, create_weapon
 from prefabs.shop import SHOP_ITEMS, SHOP_WEAPONS
+from utils.decorators import requires_character
 
 class ActionManager:
     """Runs the actions chosen in the game menu."""
@@ -17,19 +18,19 @@ class ActionManager:
        self._event_manager = em.EventManager()
        self._log_manager = lm.LogManager()
 
+    @requires_character
     def _character(self, data):
         """Shows the character sheet, or an error if there is no character."""
-        if data:
-            wins = self._log_manager.count_wins(data.name)
-            self._screen_manager.print_character_screen(data, wins)
-        else:
-            self._screen_manager.message("No character data available.", style="red")
-
+        wins = self._log_manager.count_wins(data.name)
+        self._screen_manager.print_character_screen(data, wins)
+        
+    @requires_character
     def _explore(self, data):
         """Generates a random event and triggers it for the character."""
         event_type = self._event_manager.generate_event()
         self._event_manager.trigger_event(event_type, data)
 
+    @requires_character
     def _inventory(self, character):
         """Shows the items in a loop. The player can use a potion or go back."""
         while True:
@@ -69,6 +70,7 @@ class ActionManager:
         self._screen_manager.message(f"You used {item.name} and recovered {character.hp - old_hp} HP.",
                                      title="Inventory", style="green")
 
+    @requires_character
     def _shop(self, character):
         """Shows the shop in a loop. The player can buy potions and better weapons, or go back."""
         while True:
@@ -114,7 +116,7 @@ class ActionManager:
     def do_action(self, action, data=None):
         """Runs the action with the given name (explore, character, inventory, shop or log)."""
         if action == "explore":
-            self._explore(data=data)
+            self._explore(data)
         elif action == "inventory":
             self._inventory(data)
         elif action == "shop":
@@ -122,6 +124,6 @@ class ActionManager:
         elif action == "log":
             self._log_manager.show_log()
         elif action == "character":
-            self._character(data=data)  # Pass the actual character data here
+            self._character(data)  # Pass the actual character data here
         else:
             self._screen_manager.message(f"Unknown action: {action}", style="red")

@@ -38,12 +38,12 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 | `managers/` | Game logic: menus, actions, events, battles, API, files, log, save/load, screens and validation. |
 | `models/` | Game objects: `Character`, `Enemy`, `CharacterClass`, `Weapon`, `Item`, `Inventory`, `Wallet`. |
 | `prefabs/` | Game data: classes, enemies, weapons, items, shop prices, events and validation rules. |
-| `utils/` | Helpers: console drawing (`console.py`) and stat formulas (`stats.py`). |
+| `utils/` | Helpers: console drawing (`console.py`), stat formulas (`stats.py`) and custom decorators (`decorators.py`). |
 | `tests/` | Unit tests (`unittest`). |
 
 ## Todolist
 - [x] Generator function (`yield`)
-- [ ] Custom decorator
+- [x] Custom decorator
 - [ ] `.env` file for config/secrets with `python-dotenv` (+ `.env.example`, `.env` in `.gitignore`)
 - [ ] Work on branches and merge through pull requests
 - [ ] Logging with the `logging` module
@@ -91,6 +91,7 @@ List of the criteria this project covers and where to find them.
 - **list:** inventory items (`Inventory.items`, shown and used in `ActionManager._inventory`), battle turn text, log lines.
 - **set:** enemies already defeated (`Character.defeated_enemies`), so each name is stored once.
 - **generator:** `FileManager.read_lines` (`managers/file_manager.py`) yields the lines of a file one by one with `yield`, so the whole file is not loaded at once. `LogManager.show_log` uses it to show the battle log, and `LogManager.count_wins` loops over it (one line in memory at a time) to show **Battles won** in the character sheet.
+- **decorator:** `requires_character` (`utils/decorators.py`) wraps the game menu actions (`_character`, `_explore`, `_inventory`, `_shop` in `ActionManager`). If there is no character it shows an error instead of running the action, so the check is written once.
 - **tuple:** fixed data that never changes: `BATTLE_OPTIONS`, `GAME_OPTIONS`, `TREASURE_GOLD`, event stories, and each shop offer `(kind, key, price)` in `ActionManager._shop`.
 
 ### Exceptions
@@ -110,7 +111,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 60 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 63 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
