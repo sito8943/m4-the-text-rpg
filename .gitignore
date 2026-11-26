@@ -3,4 +3,5 @@ game_data.json
 battle_log.txt
 monsters_cache.json
 game.log
+game.db
 .env
