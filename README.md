@@ -36,7 +36,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 | Folder | Content |
 |---|---|
 | `main.py` | Entry point. Only loads the config (`config.setup`), creates the `GameManager` and starts the game. |
-| `managers/` | Game logic: menus, actions, events, battles, API, files, SQLite database, log, save/load, screens and validation. |
+| `managers/` | Game logic: menus, actions, events, battles, API, AI narrator, files, SQLite database, log, save/load, screens and validation. |
 | `models/` | Game objects: `Character`, `Enemy`, `CharacterClass`, `Weapon`, `Item`, `Inventory`, `Wallet`. |
 | `prefabs/` | Game data: classes, enemies, weapons, items, shop prices, events and validation rules. |
 | `utils/` | Helpers: `.env` and logging setup (`config.py`), console drawing (`console.py`), stat formulas (`stats.py`) and custom decorators (`decorators.py`). |
@@ -49,7 +49,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 - [x] Work on branches and merge through pull requests
 - [x] Logging with the `logging` module
 - [x] Save data in a SQL database (`sqlite3`) instead of JSON
-- [ ] Connect an AI
+- [x] Connect an AI
 - [ ] Atomic commits on new days
 - [ ] GIF/video of the game in the README
 - [ ] Link the public APK deploy in the README
@@ -94,16 +94,23 @@ List of the criteria this project covers and where to find them.
 ### Config (.env)
 - Settings live in a `.env` file, loaded with `python-dotenv` by `utils/config.py` (`setup`), which `main.py` calls first.
 - `.env.example` is the template in the repo. `.env` is in `.gitignore`, so secrets are never committed.
-- Values: `API_URL` and `API_TIMEOUT` (read in `ApiManager.__init__`), `LOG_LEVEL` (read in `config.setup`).
+- Values: `API_URL` and `API_TIMEOUT` (read in `ApiManager.__init__`), `LOG_LEVEL` (read in `config.setup`), `AI_API_KEY`, `AI_MODEL` and `AI_TIMEOUT` (read in `AiManager.__init__`).
 - Every value has a default, so the game works without a `.env`.
-- Validation: `API_TIMEOUT` that is not a number (`ValueError`) and an unknown `LOG_LEVEL` use the default and write a warning to `game.log`.
+- Validation: `API_TIMEOUT` or `AI_TIMEOUT` that is not a number (`ValueError`) and an unknown `LOG_LEVEL` use the default and write a warning to `game.log`.
 
 ### Logging
 - The `logging` module writes a technical log to `game.log` (for the developer). It is separate from `battle_log.txt`, which is part of the game and is shown to the player.
 - Set up once in `utils/config.py` (`setup`, called first in `main.py`) with `logging.basicConfig` (file, level `INFO`, format `date | level | message`).
 - **info:** game started, game loaded, game saved, new game, game closed (`GameManager`, `PlayerDataManager`).
-- **warning:** the API fails and the cache is used (`ApiManager.fetch_monster`), or both fail and a prefab enemy is used (`EventManager._spawn_enemy`).
+- **warning:** the API fails and the cache is used (`ApiManager.fetch_monster`), both fail and a prefab enemy is used (`EventManager._spawn_enemy`), or the AI fails and the default story is used (`AiManager.narrate`).
 - **error:** broken or unwritable save database (`PlayerDataManager`) or broken monster cache (`ApiManager._load_cache`).
+
+### AI
+- **AI narrator:** `AiManager` (`managers/ai_manager.py`) asks Google Gemini (`gemini-flash-lite-latest`, free tier) to write a short story for each exploration event: battle, treasure and nothing (`EventManager`).
+- Sends a POST request with `urllib` (JSON body, key in the `x-goog-api-key` header), so no extra package is needed.
+- The game numbers (enemy name, gold found) stay as fixed lines, so the AI only writes the atmosphere.
+- The key is a secret in `.env` (`AI_API_KEY`), never committed. `AI_MODEL` and `AI_TIMEOUT` are also in `.env`.
+- **Fallback:** without a key, without internet, with a wrong key, too many requests (HTTP 429), a busy model (HTTP 503), a timeout or an unexpected answer, the default story from `prefabs/events.py` is used and a warning is written to `game.log`.
 
 ### Data structures
 - **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`, `EVENT_CHANCES`, `SHOP_ITEMS`, `SHOP_WEAPONS`), save data (`to_dict` / `from_dict`).
@@ -130,7 +137,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 73 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator, `logging` messages (`assertLogs`), `.env` values (`patch.dict(os.environ)`), the SQLite save (`DatabaseManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 78 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator, `logging` messages (`assertLogs`), `.env` values (`patch.dict(os.environ)`), the SQLite save (`DatabaseManager`), the AI narrator and its fallback (`AiManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).

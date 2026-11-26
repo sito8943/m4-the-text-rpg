@@ -3,6 +3,7 @@
 import random
 import logging
 
+import managers.ai_manager as ai
 import managers.screen_manager as sm
 import managers.battle_manager as bm
 import managers.api_manager as api
@@ -14,6 +15,7 @@ class EventManager:
 
     def __init__(self):
         """Creates the screen, battle and API managers used by the events."""
+        self._ai_manager = ai.AiManager()
         self._screen_manager = sm.ScreenManager()
         self._battle_manager = bm.BattleManager()
         self._api_manager = api.ApiManager()
@@ -42,7 +44,8 @@ class EventManager:
         """Spawns an enemy at the character's level and starts a battle."""
         event = EVENTS["battle"]
         enemy = self._spawn_enemy(character.level)
-        story = event["story"] + (f"A wild {enemy.name} appears! Prepare for battle!",)
+        intro = self._ai_manager.narrate(f"{character.name} meets a hostile {enemy.name}", event["story"])
+        story = intro + (f"A wild {enemy.name} appears! Prepare for battle!",)
         self._screen_manager.print_event_screen(event["title"], story, event["style"])
         self._battle_manager.start(character, enemy)
 
@@ -51,13 +54,15 @@ class EventManager:
         event = EVENTS["treasure"]
         gold = random.randint(*TREASURE_GOLD)
         character.wallet.gold += gold
-        story = event["story"] + (f"You found {gold} gold! Total: {character.wallet.gold}",)
+        story = self._ai_manager.narrate(f"{character.name} finds a hidden treasure chest", event["story"])
+        story = story + (f"You found {gold} gold! Total: {character.wallet.gold}",)
         self._screen_manager.print_event_screen(event["title"], story, event["style"])
 
     def _trigger_nothing_event(self):
         """Shows the 'nothing happens' story."""
         event = EVENTS["nothing"]
-        self._screen_manager.print_event_screen(event["title"], event["story"], event["style"])
+        story = self._ai_manager.narrate("the hero explores and nothing happens", event["story"])
+        self._screen_manager.print_event_screen(event["title"], story, event["style"])
 
     def _spawn_enemy(self, level):
         """Returns a D&D API monster for the level, or a random prefab enemy if the API fails."""

@@ -23,6 +23,9 @@ Guide to install, open and play THE TEXT-BASED RPG.
    | `API_URL` | Address of the D&D 5e monsters API. |
    | `API_TIMEOUT` | Seconds to wait for the API before using saved enemies. |
    | `LOG_LEVEL` | Detail of `game.log`: `DEBUG`, `INFO`, `WARNING`, `ERROR` or `CRITICAL`. |
+   | `AI_API_KEY` | Optional. Your free Google Gemini key from [AI Studio](https://aistudio.google.com/apikey). With it, an AI narrator writes a new story for each event. Without it, the default stories are used. |
+   | `AI_MODEL` | Gemini model for the narrator (default `gemini-flash-lite-latest`). |
+   | `AI_TIMEOUT` | Seconds to wait for the AI before using the default story. |
 4. Start the game:
    ```
    python3 ./main.py
