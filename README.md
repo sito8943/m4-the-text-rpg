@@ -46,7 +46,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 - [x] Generator function (`yield`)
 - [x] Custom decorator
 - [x] `.env` file for config/secrets with `python-dotenv` (+ `.env.example`, `.env` in `.gitignore`)
-- [ ] Work on branches and merge through pull requests
+- [x] Work on branches and merge through pull requests
 - [x] Logging with the `logging` module
 - [ ] Save data in a SQL database (`sqlite3`) instead of JSON
 - [ ] Connect an AI
@@ -131,3 +131,4 @@ List of the criteria this project covers and where to find them.
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
 - `README.md` and `requirements.txt` included.
+- **Pull requests:** each final feature was developed on its own branch and merged through a pull request ([#1](https://github.com/sito8943/m4-the-text-rpg-midterm/pull/1) generator, [#2](https://github.com/sito8943/m4-the-text-rpg-midterm/pull/2) decorator, [#3](https://github.com/sito8943/m4-the-text-rpg-midterm/pull/3) logging, [#4](https://github.com/sito8943/m4-the-text-rpg-midterm/pull/4) .env).
