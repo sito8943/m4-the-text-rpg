@@ -20,7 +20,8 @@ class ActionManager:
     def _character(self, data):
         """Shows the character sheet, or an error if there is no character."""
         if data:
-            self._screen_manager.print_character_screen(data)
+            wins = self._log_manager.count_wins(data.name)
+            self._screen_manager.print_character_screen(data, wins)
         else:
             self._screen_manager.message("No character data available.", style="red")
 

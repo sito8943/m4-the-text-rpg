@@ -44,9 +44,10 @@ class ScreenManager:
         """Shows a validation error in red."""
         utils.console.slow_print(error, style="italic red")
 
-    def print_character_screen(self, character):
+    def print_character_screen(self, character, wins):
         """Shows the character sheet."""
-        utils.console.show_screen("Character", str(character).split("\n"))
+        lines = str(character).split("\n") + [f"Battles won: {wins}"]
+        utils.console.show_screen("Character", lines)
         utils.console.pause("Press Enter to return to the game menu.")
 
     def print_event_screen(self, title, story=(), style="cyan"):
