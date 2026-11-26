@@ -1,10 +1,14 @@
+import os
 import unittest
 import urllib.error
 from unittest.mock import patch
 
 from managers.api_manager import ApiManager
+from managers.database_manager import DatabaseManager
 from managers.event_manager import EventManager
 from managers.player_data_manager import PlayerDataManager
+
+BROKEN_DB = "test_broken.db"
 
 
 # no cache file is read or written during the tests
@@ -21,8 +25,12 @@ class TestLogging(unittest.TestCase):
         self.assertIn("API not reachable, using cache", logs.output[0])
 
     def test_broken_save_logs_error(self, mock_read, mock_write):
-        mock_read.return_value = "{ broken json"
+        # a file that is not a SQLite database
+        with open(BROKEN_DB, "w") as file:
+            file.write("this is not a database")
+        self.addCleanup(os.remove, BROKEN_DB)
         manager = PlayerDataManager()
+        manager._database_manager = DatabaseManager(BROKEN_DB)
         with patch.object(manager._screen_manager, "message"):
             with self.assertLogs(level="ERROR") as logs:
                 self.assertIsNone(manager.load_data())

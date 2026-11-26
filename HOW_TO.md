@@ -56,7 +56,7 @@ Guide to install, open and play THE TEXT-BASED RPG.
 | Inventory | Use a potion to recover HP. |
 | Shop | Buy potions and better weapons with gold. |
 | Log | Shows the last lines of the battle log. |
-| Save | Saves your character in `game_data.json`. |
+| Save | Saves your character in the `game.db` database. |
 | Main Menu | Goes back to the home screen. |
 | Exit | Closes the game. |
 
