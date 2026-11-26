@@ -68,7 +68,7 @@ List of the points I accomplished and want to be graded for. Details and where t
 | 🌶 Well-thought-out design (`rich` colours and panels, letter-by-letter text, delays) | 2 |
 | 🫑 Returns to the menu after each action; exits only with `exit` | 1 |
 | 🫑 All functions apart from `main` are in separate files | 1 |
-| 🌶🌶 Accesible for people outside the course (public repo + Android app) | 4 |
+| 🌶🌶 Accessible for people outside the course (public repo + Android app) | 4 |
 | 🌶 Atomic commits spread over different days (7 days) | 2 |
 | 🫑 Public on git: `requirements.txt`, `.gitignore`, `.env`, `README.md` (+0.5 each) | 1 + 2 |
 | 🌶 GIF of the project | 2 |
