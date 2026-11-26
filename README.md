@@ -36,7 +36,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 | Folder | Content |
 |---|---|
 | `main.py` | Entry point. Only loads the config (`config.setup`), creates the `GameManager` and starts the game. |
-| `managers/` | Game logic: menus, actions, events, battles, API, files, log, save/load, screens and validation. |
+| `managers/` | Game logic: menus, actions, events, battles, API, files, SQLite database, log, save/load, screens and validation. |
 | `models/` | Game objects: `Character`, `Enemy`, `CharacterClass`, `Weapon`, `Item`, `Inventory`, `Wallet`. |
 | `prefabs/` | Game data: classes, enemies, weapons, items, shop prices, events and validation rules. |
 | `utils/` | Helpers: `.env` and logging setup (`config.py`), console drawing (`console.py`), stat formulas (`stats.py`) and custom decorators (`decorators.py`). |
@@ -48,7 +48,7 @@ Note: Why @patch? Because is for mocking and preventing the real calling of meth
 - [x] `.env` file for config/secrets with `python-dotenv` (+ `.env.example`, `.env` in `.gitignore`)
 - [x] Work on branches and merge through pull requests
 - [x] Logging with the `logging` module
-- [ ] Save data in a SQL database (`sqlite3`) instead of JSON
+- [x] Save data in a SQL database (`sqlite3`) instead of JSON
 - [ ] Connect an AI
 - [ ] Atomic commits on new days
 - [ ] GIF/video of the game in the README
@@ -73,7 +73,11 @@ List of the criteria this project covers and where to find them.
 - No file has more than 300 lines (the biggest has about 100).
 
 ### External files
-- **Save data:** `PlayerDataManager.save_data` / `load_data` (`managers/player_data_manager.py`) save and load the character as JSON in `game_data.json`.
+- **SQL database:** the character is saved in a SQLite database, `game.db` (`sqlite3`, standard library).
+  - `DatabaseManager` (`managers/database_manager.py`) creates the tables and runs the SQL: `CREATE TABLE IF NOT EXISTS`, `DELETE`, `INSERT` and `SELECT`.
+  - 3 tables: `character` (one row: name, level, HP, XP, gold, class, weapon), `inventory` (one row per item) and `defeated_enemies` (one row per enemy; `PRIMARY KEY` keeps names unique, like the `set`).
+  - Values are passed with `?` placeholders, never inside the SQL text, to prevent SQL injection.
+  - `PlayerDataManager.save_data` / `load_data` (`managers/player_data_manager.py`) use it with `Character.to_dict` / `from_dict`.
 - **Log file:** every battle turn is written to `battle_log.txt` instead of being kept only on screen.
   - Send new data to the file: `LogManager.write_log`.
   - Display the contents of the file: `LogManager.show_log` (menu option **5. Log**).
@@ -99,7 +103,7 @@ List of the criteria this project covers and where to find them.
 - Set up once in `utils/config.py` (`setup`, called first in `main.py`) with `logging.basicConfig` (file, level `INFO`, format `date | level | message`).
 - **info:** game started, game loaded, game saved, new game, game closed (`GameManager`, `PlayerDataManager`).
 - **warning:** the API fails and the cache is used (`ApiManager.fetch_monster`), or both fail and a prefab enemy is used (`EventManager._spawn_enemy`).
-- **error:** broken save file (`PlayerDataManager.load_data`) or broken monster cache (`ApiManager._load_cache`).
+- **error:** broken or unwritable save database (`PlayerDataManager`) or broken monster cache (`ApiManager._load_cache`).
 
 ### Data structures
 - **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`, `EVENT_CHANCES`, `SHOP_ITEMS`, `SHOP_WEAPONS`), save data (`to_dict` / `from_dict`).
@@ -111,7 +115,7 @@ List of the criteria this project covers and where to find them.
 
 ### Exceptions
 - `FileManager.read_file` handles `FileNotFoundError` (creates the file).
-- `PlayerDataManager.load_data` handles `json.JSONDecodeError` (broken save file).
+- `PlayerDataManager.load_data` and `save_data` handle `sqlite3.DatabaseError` (broken `game.db`).
 - `ApiManager.fetch_monster` handles `URLError` (no internet), `TimeoutError` (slow API), `json.JSONDecodeError` (bad answer) and `KeyError` (missing fields), and falls back to the cache.
 - `ApiManager._load_cache` handles `json.JSONDecodeError` (broken cache file).
 
@@ -126,7 +130,7 @@ List of the criteria this project covers and where to find them.
 - Every module, class and function has a docstring.
 
 ### Unit tests
-- 69 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator, `logging` messages (`assertLogs`), `.env` values (`patch.dict(os.environ)`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
+- 73 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator, `logging` messages (`assertLogs`), `.env` values (`patch.dict(os.environ)`), the SQLite save (`DatabaseManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
 - Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
