@@ -40,13 +40,7 @@ class GameManager:
     # --- Lifecycle ---
 
     def start_game(self):
-        """Sets up logging, loads the saved data and opens the home screen."""
-        logging.basicConfig(
-            filename="game.log",
-            level=logging.INFO,
-            format="%(asctime)s | %(levelname)s | %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
+        """Loads the saved data and opens the home screen."""
         logging.info("Game started")
         self.status = "started"
         self._data = self._player_data_manager.load_data()
