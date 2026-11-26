@@ -1,5 +1,6 @@
 """Monsters from the D&D 5e API (https://www.dnd5eapi.co), cached in monsters_cache.json."""
 
+import os
 import json
 import random
 import logging
@@ -8,8 +9,8 @@ import urllib.request
 
 import managers.file_manager as fm
 
-API_URL = "https://www.dnd5eapi.co/api/2014/monsters"
-TIMEOUT = 3
+DEFAULT_API_URL = "https://www.dnd5eapi.co/api/2014/monsters"
+DEFAULT_TIMEOUT = 3
 CACHE_FILE = "monsters_cache.json"
 
 
@@ -29,6 +30,12 @@ class ApiManager:
 
     def __init__(self):
         """Creates the file manager for the cache and loads it."""
+        self._api_url = os.getenv("API_URL", DEFAULT_API_URL)
+        try:
+            self._timeout = float(os.getenv("API_TIMEOUT", DEFAULT_TIMEOUT))
+        except ValueError:
+            logging.warning("API_TIMEOUT is not a number, using default")
+            self._timeout = DEFAULT_TIMEOUT
         self._file_manager = fm.FileManager(CACHE_FILE)
         self._cache = self._load_cache()
 
@@ -41,7 +48,7 @@ class ApiManager:
                 return self._cached_monster(ratings)
             index = random.choice(indexes)
             if index not in self._cache["monsters"]:
-                self._cache["monsters"][index] = self._simplify(self._get_json(f"{API_URL}/{index}"))
+                self._cache["monsters"][index] = self._simplify(self._get_json(f"{self._api_url}/{index}"))
                 self._save_cache()
             return self._cache["monsters"][index]
         except urllib.error.URLError:
@@ -72,14 +79,14 @@ class ApiManager:
         """Returns the monster indexes for the ratings, from the cache or the API."""
         key = ",".join(str(rating) for rating in ratings)
         if key not in self._cache["lists"]:
-            data = self._get_json(f"{API_URL}?challenge_rating={key}")
+            data = self._get_json(f"{self._api_url}?challenge_rating={key}")
             self._cache["lists"][key] = [monster["index"] for monster in data["results"]]
             self._save_cache()
         return self._cache["lists"][key]
 
     def _get_json(self, url):
         """Downloads a URL and returns its JSON."""
-        with urllib.request.urlopen(url, timeout=TIMEOUT) as response:
+        with urllib.request.urlopen(url, timeout=self._timeout) as response:
             return json.loads(response.read().decode("utf-8"))
 
     def _simplify(self, data):
