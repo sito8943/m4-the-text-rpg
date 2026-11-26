@@ -2,63 +2,89 @@
 
 > **Not Ogabek?** This README is the project report for grading. To install and play the game, read [HOW_TO.md](HOW_TO.md).
 
-## Authors
-- Carlos Andrés Mora González
+![Demo](images/demo.gif)
 
 ## Description
-This is an event-driven, text-based role-playing game (RPG) that runs in the terminal. In it, you create your character and venture into the vast world of the "terminal void"—an environment filled with characters and combat.
+An event-driven, text-based role-playing game (RPG) that runs in the terminal. You create your character and venture into the "terminal void", an environment full of enemies, treasure and combat.
 
-You can explore, fight enemies in turn-based battles, find treasure, level up, check your character sheet, read the battle log and save your progress. Everything happens from an interactive menu; the game only closes when you choose **Exit** or type `exit`.
+- **What problem it solves:** a small, replayable adventure that runs in any terminal, with no graphics engine. It is also a practice project for building a real Python program: split into modules, with a database, a log file, an external API, an AI, input validation and unit tests.
+- **Main features:**
+  - Create a character (name + Warrior, Hunter or Rogue class with its own starter weapon).
+  - Explore: random battles, treasure or nothing, told by an **AI narrator** (Google Gemini).
+  - Turn-based battles against real monsters from the **D&D 5e API**: attack, use a potion or flee.
+  - XP, levels, gold, a shop with potions and better weapons, and an inventory.
+  - Character sheet with **battles won**, a battle log, and save/load in a **SQLite** database.
+  - Everything happens from an interactive menu; the game only closes with **Exit** or `exit`.
+- **Who it's for:** people who like retro text games, and Python students who want to see a complete project.
 
-## Purpose
-Give the player a small, replayable adventure in the terminal, and practise building a real Python project: split into modules, with saved data, a log file, input validation and unit tests.
+## Screenshots
 
-## How to run
+### AI narrator
+![AI narrator](images/ai_story.png) 
+
+### Battle
+![Battle](images/battle.png)
+
+### Game menu
+![Game menu](images/game_menu.png)
+
+## Installation
 ```
 pip3 install -r requirements.txt
-cp .env.example .env   # optional: the game has default values
+cp .env.example .env   # optional: add your free Gemini key for the AI narrator
 python3 ./main.py
 ```
 
-Requirements, step-by-step setup and how to play: see [HOW_TO.md](HOW_TO.md).
+Requirements, step-by-step setup, the `.env` values and how to play: see [HOW_TO.md](HOW_TO.md).
 
-## How to run tests
+**Android:** the game also runs on Android phones: [m4-the-text-rpg-android](https://github.com/sito8943/m4-the-text-rpg-android).
+
+### How to run tests
 ```
 python3 -m unittest discover tests -v
 ```
 
-Note: Why unittest instead of pytest? Because it comes with python :)
-Note: Why unit tests with classes? Because unittest force you to use classes :)
-Note: Why @patch? Because is for mocking and preventing the real calling of methods which affect files or other external things :)
+*Note: Why unittest instead of pytest? Because it comes with python :)*
 
-## Project structure
 
-| Folder | Content |
+*Note: Why unit tests with classes? Because unittest force you to use classes :)*
+
+
+*Note: Why @patch? Because is for mocking and preventing the real calling of methods which affect files or other external things :)*
+
+## Usage
+![Usage](images/demo.gif)
+
+1. **Start Game / New Game** → type a name → choose a class.
+2. **Explore** → the AI narrator tells what happens; in a battle choose **Attack**, **Use potion** or **Flee**.
+3. **Character** shows your stats and battles won; **Log** shows the last battle lines.
+4. **Save**, then type `exit`. Next time, **Continue Game** loads your character.
+
+# Completed functionality and approximate grades
+List of the points I accomplished and want to be graded for. Details and where to find each one are in the sections below.
+
+| Criterion | Points |
 |---|---|
-| `main.py` | Entry point. Only loads the config (`config.setup`), creates the `GameManager` and starts the game. |
-| `managers/` | Game logic: menus, actions, events, battles, API, AI narrator, files, SQLite database, log, save/load, screens and validation. |
-| `models/` | Game objects: `Character`, `Enemy`, `CharacterClass`, `Weapon`, `Item`, `Inventory`, `Wallet`. |
-| `prefabs/` | Game data: classes, enemies, weapons, items, shop prices, events and validation rules. |
-| `utils/` | Helpers: `.env` and logging setup (`config.py`), console drawing (`console.py`), stat formulas (`stats.py`) and custom decorators (`decorators.py`). |
-| `tests/` | Unit tests (`unittest`). |
+| 🌶 Well-thought-out design (`rich` colours and panels, letter-by-letter text, delays) | 2 |
+| 🫑 Returns to the menu after each action; exits only with `exit` | 1 |
+| 🫑 All functions apart from `main` are in separate files | 1 |
+| 🌶🌶 Accesible for people outside the course (public repo + Android app) | 4 |
+| 🌶 Atomic commits spread over different days (7 days) | 2 |
+| 🫑 Public on git: `requirements.txt`, `.gitignore`, `.env`, `README.md` (+0.5 each) | 1 + 2 |
+| 🌶 GIF of the project | 2 |
+| 🫑 Accepted pull requests (single-dev project) | 1 |
+| 🫑 External file + 🌶 actual SQL database (SQLite) | 1 + 2 |
+| 🫑 Unit tests (78 tests) | 1 |
+| 🫑 External API (D&D 5e) + 🌶 connected AI (Gemini) | 1 + 2 |
+| 🫑 Data structures: dict/list/set/tuple, generator, lambda, decorator (+0.5 each) | 1 + 2 |
+| 🫑 Classes + 🌶 inheritance (`Enemy(Character)`) | 1 + 2 |
+| 🫑 Error handling: `try/except` + regex validation (+0.5 each) | 1 + 1 |
+| 🫑 Decomposition: no code outside functions, ≥10 functions, ≤300 lines/file, ≤80 lines/function, docstrings (+0.5 each) | 1 + 2 |
+| 🫑 All interaction and restarting happen inside the app | 1 |
+| 🫑 Logging (`logging` module) | 1 |
+| 🌶 On-time submission | 2 |
 
-## Todolist
-- [x] Generator function (`yield`)
-- [x] Custom decorator
-- [x] `.env` file for config/secrets with `python-dotenv` (+ `.env.example`, `.env` in `.gitignore`)
-- [x] Work on branches and merge through pull requests
-- [x] Logging with the `logging` module
-- [x] Save data in a SQL database (`sqlite3`) instead of JSON
-- [x] Connect an AI
-- [ ] Atomic commits on new days
-- [ ] GIF/video of the game in the README
-- [ ] Link the public APK deploy in the README
-- [ ] README: Screenshots, Usage, Approximate Total, Acknowledgments and Support sections
-- [ ] README "Graded points": add the new final criteria
-- [ ] On-time submission
-
-## Graded points
-List of the criteria this project covers and where to find them.
+**Approximate Total: 30/30 points** (about 38 before the 30-point cap)
 
 ### Menu
 - **Interactive menu:** `GameManager._home_screen` and `GameManager._game_menu` (`managers/game_manager.py`) show the menus in a `while True` loop. After any action the program goes back to the menu.
@@ -70,7 +96,8 @@ List of the criteria this project covers and where to find them.
 ### Decomposition
 - `main.py` only calls `config.setup()` and `GameManager().start_game()`.
 - All other functions are in separate modules (`managers/`, `models/`, `prefabs/`, `utils/`).
-- No file has more than 300 lines (the biggest has about 100).
+- No code outside functions (only imports and constants at module level). 130 functions in total.
+- No file has more than 300 lines (the biggest, `managers/game_manager.py`, has 161) and no function has more than 80 lines (the longest has 28).
 
 ### External files
 - **SQL database:** the character is saved in a SQLite database, `game.db` (`sqlite3`, standard library).
@@ -112,6 +139,14 @@ List of the criteria this project covers and where to find them.
 - The key is a secret in `.env` (`AI_API_KEY`), never committed. `AI_MODEL` and `AI_TIMEOUT` are also in `.env`.
 - **Fallback:** without a key, without internet, with a wrong key, too many requests (HTTP 429), a busy model (HTTP 503), a timeout or an unexpected answer, the default story from `prefabs/events.py` is used and a warning is written to `game.log`.
 
+### Classes
+- More than 2 classes: models (`Character`, `Enemy`, `CharacterClass`, `Weapon`, `Item`, `Inventory`, `Wallet`) and managers (`GameManager`, `BattleManager`, `AiManager`, `DatabaseManager`...).
+- **Inheritance:** `Enemy(Character)` (`models/enemy.py`) reuses the character stats, attack and damage, and adds XP and gold rewards.
+
+### Deploy
+- Public GitHub repository: [sito8943/m4-the-text-rpg](https://github.com/sito8943/m4-the-text-rpg).
+- Android app (the same Python game inside an APK, with a touch keyboard): [sito8943/m4-the-text-rpg-android](https://github.com/sito8943/m4-the-text-rpg-android).
+
 ### Data structures
 - **dict:** menu options (`GameManager._game_menu`), battle actions (`BattleManager.start`), prefabs (`CLASSES`, `ENEMIES`, `ITEMS`, `WEAPONS`, `EVENTS`, `EVENT_CHANCES`, `SHOP_ITEMS`, `SHOP_WEAPONS`), save data (`to_dict` / `from_dict`).
 - **list:** inventory items (`Inventory.items`, shown and used in `ActionManager._inventory`), battle turn text, log lines.
@@ -140,6 +175,45 @@ List of the criteria this project covers and where to find them.
 - 78 tests in `tests/` for `Character`, `Wallet`, `ValidationManager`, `GameManager` (character creation, class choice, starter weapon, New Game, Main Menu, `exit` command), the inventory and the shop (`ActionManager`), event chances (`EventManager`), the `read_lines` generator (`FileManager`), battles won and clearing the log (`LogManager`), the `requires_character` decorator, `logging` messages (`assertLogs`), `.env` values (`patch.dict(os.environ)`), the SQLite save (`DatabaseManager`), the AI narrator and its fallback (`AiManager`) and the API (`ApiManager`, offline fallback, stat conversion). API tests use `@patch`, so they don't need internet.
 
 ### Git
-- Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`).
-- `README.md` and `requirements.txt` included.
-- **Pull requests:** each final feature was developed on its own branch and merged through a pull request ([#1](https://github.com/sito8943/m4-the-text-rpg-midterm/pull/1) generator, [#2](https://github.com/sito8943/m4-the-text-rpg-midterm/pull/2) decorator, [#3](https://github.com/sito8943/m4-the-text-rpg-midterm/pull/3) logging, [#4](https://github.com/sito8943/m4-the-text-rpg-midterm/pull/4) .env).
+- Atomic commits with a prefix (`add:`, `change:`, `fix:`, `feat:`), spread over 7 different days.
+- `README.md`, `requirements.txt`, `.gitignore` and `.env.example` included (`.env` itself is ignored).
+- **Pull requests:** each final feature was developed on its own branch and merged through a pull request: [#1](https://github.com/sito8943/m4-the-text-rpg/pull/1) generator, [#2](https://github.com/sito8943/m4-the-text-rpg/pull/2) decorator, [#3](https://github.com/sito8943/m4-the-text-rpg/pull/3) logging, [#4](https://github.com/sito8943/m4-the-text-rpg/pull/4) .env, [#5](https://github.com/sito8943/m4-the-text-rpg/pull/5) SQLite, [#6](https://github.com/sito8943/m4-the-text-rpg/pull/6) AI narrator.
+
+## TODO
+
+### Incomplete Planned Features
+- [ ] Spells: MP is hidden for now; it will be used for spells.
+- [ ] Defense: `defense_power` is shown in the character sheet but does not reduce damage yet.
+- [ ] Download the Android APK from a GitHub Release.
+- [ ] AI narrator for victory and defeat screens too.
+
+## Project Structure
+```
+m4-the-text-rpg/
+├── .gitignore           # Files to ignore in Git (saves, logs, cache, .env)
+├── .env.example         # Template for the .env config (copy it to .env)
+├── README.md            # Project report (this file)
+├── HOW_TO.md            # How to install and play
+├── requirements.txt     # Python dependencies (rich, python-dotenv)
+├── main.py              # Entry point: config.setup() + GameManager().start_game()
+├── managers/            # Game logic: menus, actions, events, battles, API, AI, database, log, screens, validation
+├── models/              # Game objects: Character, Enemy, CharacterClass, Weapon, Item, Inventory, Wallet
+├── prefabs/             # Game data: classes, enemies, weapons, items, shop, events, validation rules
+├── utils/               # Helpers: config (.env + logging), console drawing, stat formulas, decorators
+├── tests/               # Unit tests (unittest)
+└── images/              # GIF and screenshots for this README
+```
+Created while playing (ignored by Git): `game.db` (save), `battle_log.txt` (battle log), `game.log` (technical log), `monsters_cache.json` (API cache).
+
+## Acknowledgments
+- 👾 [D&D 5e API](https://www.dnd5eapi.co) for the monsters.
+- 🤖 [Google Gemini](https://ai.google.dev) for the AI narrator.
+- ✨ [rich](https://github.com/Textualize/rich) for the colours and panels, and [python-dotenv](https://github.com/theskumar/python-dotenv) for the `.env` file. 
+- 😏 Ogabek and the Python II course at Harbour.Space.
+- 🧡 [Claude Code](https://claude.com/claude-code) as a coding assistant for explanations, code reviews and tests. 
+
+## Team Members
+- Carlos Andrés Mora González, GitHub: [@sito8943](https://github.com/sito8943)
+
+## Support
+Found a bug or have an idea? Open an issue: [github.com/sito8943/m4-the-text-rpg/issues](https://github.com/sito8943/m4-the-text-rpg/issues).
